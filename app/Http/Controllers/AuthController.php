@@ -62,7 +62,7 @@ class AuthController extends Controller
                                     ]
                                 );
 
-                                // Set role hanya saat user baru
+                                
                                 if ($localUser->wasRecentlyCreated) {
                                     $localUser->role = 'mahasiswa';
                                     $localUser->save();

@@ -41,8 +41,8 @@ Route::middleware(['auth.admin'])->group(function () {
 });
 
 Route::middleware('auth.custom')->group(function () {
-Route::get('/admin/kas', [AdminMahasiswaController::class, 'index'])->name('admin.kas.index');
-Route::post('/admin/kas', [AdminMahasiswaController::class, 'store'])->name('admin.kas.store');
+    Route::get('/admin/kas/{angkatan?}', [AdminMahasiswaController::class, 'index'])->name('admin.kas.index');
+    Route::post('/admin/kas', [AdminMahasiswaController::class, 'store'])->name('admin.kas.store');
 });
 
 Route::middleware('auth.custom')->group(function () {
