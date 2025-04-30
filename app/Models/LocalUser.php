@@ -21,4 +21,7 @@ class LocalUser extends Model
     protected $hidden = [
         'password',
     ];
+
+    
+    
 }

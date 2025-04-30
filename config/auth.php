@@ -36,11 +36,17 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
     ],
+
+    'local' => [
+        'driver' => 'session',
+        'provider' => 'local_users', // pastikan ini sama
+    ],
+],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -60,16 +66,24 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ],
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+
+    'local_users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\LocalUser::class, // pastikan nama model sesuai
+    ],
+],
+
+    
 
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
-    ],
+        
 
     /*
     |--------------------------------------------------------------------------

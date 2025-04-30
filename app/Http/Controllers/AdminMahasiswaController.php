@@ -17,11 +17,11 @@ class AdminMahasiswaController extends Controller
             return redirect()->route('login')->withErrors(['login' => 'Silakan login terlebih dahulu.']);
         }
 
-        // Inisialisasi variabel default
+        
         $mahasiswa = [];
         $angkatanList = [];
         $payments = [];
-        $angkatanSelected = $angkatan; // Simpan angkatan yang dipilih
+        $angkatanSelected = $angkatan; 
 
         try {
             $response = Http::withToken($token)

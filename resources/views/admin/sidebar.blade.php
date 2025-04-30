@@ -22,6 +22,7 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
+@if(session('user')['role'] === 'admin' || session('user')['role'] === 'bendahara')
             <!-- Heading -->
             <div class="sidebar-heading">
                 Interface
@@ -43,6 +44,34 @@
                     </div>
                 </li>
 
+                <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.role.index') }}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Role</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProker"
+                    aria-expanded="true" aria-controls="collapseProker">
+                    <i class="fas fa-fw fa-tasks"></i>
+                    <span>Program Kerja</span>
+                </a>
+                <div id="collapseProker" class="collapse" aria-labelledby="headingProker" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Kelola Proker:</h6>
+                        <a class="collapse-item" href="{{ route('proker.index') }}">Daftar Program Kerja</a>
+                        <a class="collapse-item" href="{{ route('proker.create') }}">Tambah Program Kerja</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.kas.index') }}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Kas</span></a>
+            </li>
+            @endif
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
@@ -90,7 +119,29 @@
                     </div>
                 </div>
             </li>
+            @if(session('user')['role'] === 'admin' || session('user')['role'] === 'kaprodi')
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProposal"
+                        aria-expanded="true" aria-controls="collapseProposal">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>Proposal</span>
+                    </a>
+                    <div id="collapseProposal" class="collapse" aria-labelledby="headingProposal" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Kelola Proposal:</h6>
+                            @if(session('user')['role'] === 'kaprodi')
+                                <a class="collapse-item" href="{{ route('admin.kaprodi.proposals.index') }}">Daftar Proposal</a>
+                            @endif
+                            @if(session('user')['role'] === 'admin')
+                                <a class="collapse-item" href="{{ route('admin.proposals.create') }}">Kirim Proposal</a>
+                                <a class="collapse-item" href="{{ route('admin.proposals.index') }}">Daftar Proposal</a>
+                            @endif
+                        </div>
+                    </div>
+                </li>
+                @endif
 
+            @if(session('user')['role'] === 'kaprodi')
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProker"
                     aria-expanded="true" aria-controls="collapseProker">
@@ -106,12 +157,6 @@
                 </div>
             </li>
 
-            <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.role.index') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Role</span></a>
-            </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.kas.index') }}">
@@ -125,6 +170,7 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
             </li>
+            @endif
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">

@@ -62,19 +62,6 @@
                     <li class="nav-item mx-2"><a class="nav-link" href="#">Berita</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="#">Keuangan</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="#">Visi Misi</a></li>
-
-                    <li class="nav-item dropdown mx-2">
-                        <a class="nav-link dropdown-toggle" href="#" id="prokerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Proker
-                            <span class="dropdown-arrow"><i class="fas fa-chevron-down"></i></span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="prokerDropdown">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-alt me-2"></i>Proker 2023</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-alt me-2"></i>Proker 2022</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-alt me-2"></i>Proker 2021</a></li>
-                        </ul>
-                    </li>
-
                     <li class="nav-item mx-2"><a class="nav-link" href="#">STRUKTUR ORGANISASI</a></li>
                 </ul>
             </div>

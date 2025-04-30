@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\LocalUser;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -59,6 +60,7 @@ class AuthController extends Controller
                                         'nim'      => $nim,
                                         'angkatan' => $angkatan,
                                         'prodi'    => $prodi,
+                                        'password' => Hash::make($password), // Hash password
                                     ]
                                 );
 
@@ -76,7 +78,8 @@ class AuthController extends Controller
                                     'user' => array_merge($user, [
                                         'nama'  => $nama,
                                         'prodi' => $prodi,
-                                        'role'  => $role
+                                        'role'  => $role,
+
                                     ])
                                 ]);
 
@@ -111,9 +114,9 @@ class AuthController extends Controller
             case 'admin':
                 return redirect('/admin')->with('success', 'Login berhasil!');
             case 'kaprodi':
-                return redirect('/admin/kaprodi')->with('success', 'Login berhasil!');
+                return redirect('/admin')->with('success', 'Login berhasil!');
             case 'bendahara':
-                return redirect('/admin/keuangan')->with('success', 'Login berhasil!');
+                return redirect('/admin')->with('success', 'Login berhasil!');
             case 'mahasiswa':
             default:
                 return redirect('/')->with('success', 'Login berhasil!');

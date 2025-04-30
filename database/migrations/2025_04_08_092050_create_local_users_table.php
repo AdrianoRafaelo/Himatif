@@ -20,9 +20,12 @@ return new class extends Migration
         $table->string('nim')->nullable();
         $table->string('angkatan')->nullable();
         $table->string('prodi')->nullable();
-        $table->string('role')->nullable(); 
+        $table->string('role')->nullable(); // contoh: admin, mahasiswa, bendahara
+        $table->string('password');
+        $table->rememberToken(); // << tambah ini jika pakai login
         $table->timestamps();
     });
+    
 }
 
 
