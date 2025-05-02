@@ -1,13 +1,13 @@
 @extends('layouts.main')
 
 @section('content')
-<!-- Welcome Section -->
+
 <section class="feature-section section-spacing">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-5 mb-lg-0">
                 <span class="section-subheading">Selamat Datang di</span>
-                <h1 class="display-title">Himpunan Mahasiswa <span class="text-gradient">Teknik Informatika</span></h1>
+                <h1 class="display-title">Himpunan Mahasiswa <span class="text-gradient">Teknologi Informasi</span></h1>
                 <p class="body-large mb-4">Wadah bagi mahasiswa Teknik Informatika untuk mengembangkan potensi akademik, soft skill, dan memperluas jaringan profesional.</p>
                 <p class="body mb-5">HIMATIF berkomitmen untuk memfasilitasi pengembangan mahasiswa melalui berbagai kegiatan yang memberdayakan dan membuka peluang karir di dunia teknologi informasi.</p>
                 <div class="d-flex flex-wrap gap-3">

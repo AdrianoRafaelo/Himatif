@@ -105,7 +105,7 @@ class AuthController extends Controller
     public function logout()
     {
         session()->forget(['user', 'token']);
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 
     protected function redirectByRole($role)
@@ -119,7 +119,7 @@ class AuthController extends Controller
                 return redirect('/admin')->with('success', 'Login berhasil!');
             case 'mahasiswa':
             default:
-                return redirect('/')->with('success', 'Login berhasil!');
+                return redirect('/student')->with('success', 'Login berhasil!');
         }
     }
 }

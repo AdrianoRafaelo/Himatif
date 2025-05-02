@@ -8,6 +8,8 @@ use App\Http\Controllers\AdminMahasiswaController;
 use App\Http\Controllers\WorkprogramController;
 use App\Http\Controllers\ProkerController;
 use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\studentController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +24,8 @@ use App\Http\Controllers\ProposalController;
 
 // Rute untuk halaman home (publik, tanpa autentikasi)
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/events', [EventController::class, 'tampilEventKePengguna'])->name('events');
+
 
 // Rute autentikasi
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -53,3 +57,13 @@ Route::get('/kaprodi/proposals', [ProposalController::class, 'kaprodiIndex'])->n
 Route::patch('/kaprodi/proposals/{proposal}/approve', [ProposalController::class, 'approve'])->name('kaprodi.proposals.approve');
 Route::patch('/kaprodi/proposals/{proposal}/reject', [ProposalController::class, 'reject'])->name('kaprodi.proposals.reject');
 });
+
+Route::middleware('auth.custom')->group(function () {
+Route::get('/student', [studentController::class, 'index'])->name('student');
+});
+
+// Admin Event Routes
+Route::middleware('auth.custom')->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('event', EventController::class);
+});
+
