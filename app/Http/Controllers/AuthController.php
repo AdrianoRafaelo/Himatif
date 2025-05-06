@@ -64,7 +64,6 @@ class AuthController extends Controller
                                     ]
                                 );
 
-                                
                                 if ($localUser->wasRecentlyCreated) {
                                     $localUser->role = 'mahasiswa';
                                     $localUser->save();
@@ -72,14 +71,14 @@ class AuthController extends Controller
 
                                 $role = $localUser->role;
 
-                                // Simpan session
+                                // Simpan session dengan menambahkan nim
                                 session([
                                     'token' => $token,
                                     'user' => array_merge($user, [
                                         'nama'  => $nama,
                                         'prodi' => $prodi,
                                         'role'  => $role,
-
+                                        'nim'   => $nim, // Tambahkan nim ke session
                                     ])
                                 ]);
 

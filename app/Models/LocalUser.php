@@ -15,7 +15,6 @@ class LocalUser extends Model
         'angkatan',
         'prodi',
         'role',
-        'password',      
     ];
 
     protected $hidden = [

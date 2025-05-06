@@ -19,10 +19,12 @@ return new class extends Migration
             $table->string('nama');
             $table->string('angkatan');
             $table->string('prodi');
+            $table->integer('bulan');
+            $table->integer('tahun');
             $table->date('tanggal_bayar');
             $table->timestamps();
+            $table->unique(['nim', 'bulan', 'tahun'], 'payments_nim_bulan_tahun_unique');
         });
-        
     }
 
     /**

@@ -1,193 +1,173 @@
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas -wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3"> HIMATIF <sup></sup></div>
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/admin') }}">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">HIMATIF</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ url('/admin') }}">
+            <i class="fas fa-fw fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    @if(session('user')['role'] === 'admin' || session('user')['role'] === 'bendahara')
+        <!-- Heading -->
+        <div class="sidebar-heading text-uppercase">
+            <span class="small font-weight-bold">Manajemen</span>
+        </div>
+
+        <!-- Nav Item - Events Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEvents"
+                aria-expanded="true" aria-controls="collapseEvents">
+                <i class="fas fa-fw fa-calendar-alt"></i>
+                <span>Events</span>
             </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ url('/admin') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-@if(session('user')['role'] === 'admin' || session('user')['role'] === 'bendahara')
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Interface
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                        aria-expanded="true" aria-controls="collapseTwo">
-                        <i class="fas fa-fw fa-cog"></i>
-                        <span>events</span>
+            <div id="collapseEvents" class="collapse" aria-labelledby="headingEvents" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded shadow-sm">
+                    <a class="collapse-item" href="{{ route('admin.event.create') }}">
+                        <i class="fas fa-plus-circle fa-sm mr-2 text-primary"></i>Buat Event
                     </a>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Kelola Event:</h6>
-                            <a class="collapse-item" href="{{ route('admin.event.create') }}">Buat Event</a>
-                            <a class="collapse-item" href="{{ route('admin.event.index') }}">Daftar Event</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.role.index') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Role</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProker"
-                    aria-expanded="true" aria-controls="collapseProker">
-                    <i class="fas fa-fw fa-tasks"></i>
-                    <span>Program Kerja</span>
-                </a>
-                <div id="collapseProker" class="collapse" aria-labelledby="headingProker" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Kelola Proker:</h6>
-                        <a class="collapse-item" href="{{ route('proker.index') }}">Daftar Program Kerja</a>
-                        <a class="collapse-item" href="{{ route('proker.create') }}">Tambah Program Kerja</a>
-                    </div>
-                </div>
-            </li>
-
-            
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.kas.index') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Kas</span></a>
-            </li>
-            @endif
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilities</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Addons
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
-                    </div>
-                </div>
-            </li>
-            @if(session('user')['role'] === 'admin' || session('user')['role'] === 'kaprodi')
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProposal"
-                        aria-expanded="true" aria-controls="collapseProposal">
-                        <i class="fas fa-fw fa-folder"></i>
-                        <span>Proposal</span>
+                    <a class="collapse-item" href="{{ route('admin.event.index') }}">
+                        <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Event
                     </a>
-                    <div id="collapseProposal" class="collapse" aria-labelledby="headingProposal" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Kelola Proposal:</h6>
-                            @if(session('user')['role'] === 'kaprodi')
-                                <a class="collapse-item" href="{{ route('admin.kaprodi.proposals.index') }}">Daftar Proposal</a>
-                            @endif
-                            @if(session('user')['role'] === 'admin')
-                                <a class="collapse-item" href="{{ route('admin.proposals.create') }}">Kirim Proposal</a>
-                                <a class="collapse-item" href="{{ route('admin.proposals.index') }}">Daftar Proposal</a>
-                            @endif
-                        </div>
-                    </div>
-                </li>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Role -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.role.index') }}">
+                <i class="fas fa-fw fa-user-tag"></i>
+                <span>Role Management</span>
+            </a>
+        </li>
+
+        <!-- Nav Item - Program Kerja Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProker"
+                aria-expanded="true" aria-controls="collapseProker">
+                <i class="fas fa-fw fa-project-diagram"></i>
+                <span>Program Kerja</span>
+            </a>
+            <div id="collapseProker" class="collapse" aria-labelledby="headingProker" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded shadow-sm">
+                    <a class="collapse-item" href="{{ route('proker.index') }}">
+                        <i class="fas fa-clipboard-list fa-sm mr-2 text-primary"></i>Daftar Program
+                    </a>
+                    <a class="collapse-item" href="{{ route('proker.create') }}">
+                        <i class="fas fa-plus-circle fa-sm mr-2 text-primary"></i>Tambah Program
+                    </a>
+                </div>
+            </div>
+        </li>
+
+        
+
+        <!-- Nav Item - Struktur Organisasi BPH -->
+        @if(session('user')['role'] === 'admin')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.bph.index') }}">
+                    <i class="fas fa-fw fa-sitemap"></i>
+                    <span>Struktur Organisasi BPH</span>
+                </a>
+            </li>
+        @endif
+
+        <!-- Nav Item - Kas -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.kas.index') }}">
+                <i class="fas fa-fw fa-money-bill-wave"></i>
+                <span>Keuangan</span>
+            </a>
+        </li>
+    @endif
+    
+   
+
+    @if(session('user')['role'] === 'admin' || session('user')['role'] === 'kaprodi')
+    <!-- Nav Item - Proposal Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProposal"
+            aria-expanded="true" aria-controls="collapseProposal">
+            <i class="fas fa-fw fa-file-alt"></i>
+            <span>Proposal</span>
+        </a>
+        <div id="collapseProposal" class="collapse" aria-labelledby="headingProposal" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded shadow-sm">
+                
+                @if(session('user')['role'] === 'admin')
+                    <a class="collapse-item" href="{{ route('admin.proposals.create') }}">
+                        <i class="fas fa-paper-plane fa-sm mr-2 text-primary"></i>Kirim Proposal
+                    </a>
+                    <a class="collapse-item" href="{{ route('admin.proposals.index') }}">
+                        <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Proposal
+                    </a>
+                @elseif(session('user')['role'] === 'kaprodi')
+                    <a class="collapse-item" href="{{ route('admin.kaprodi.proposals.index') }}">
+                        <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Proposal
+                    </a>
                 @endif
 
-            @if(session('user')['role'] === 'kaprodi')
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProker"
-                    aria-expanded="true" aria-controls="collapseProker">
-                    <i class="fas fa-fw fa-tasks"></i>
-                    <span>Program Kerja</span>
-                </a>
-                <div id="collapseProker" class="collapse" aria-labelledby="headingProker" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Kelola Proker:</h6>
-                        <a class="collapse-item" href="{{ route('proker.index') }}">Daftar Program Kerja</a>
-                        <a class="collapse-item" href="{{ route('proker.create') }}">Tambah Program Kerja</a>
-                    </div>
+            </div>
+        </div>
+    </li>
+@endif
+
+
+    @if(session('user')['role'] === 'kaprodi')
+        <!-- Nav Item - Program Kerja Menu for Kaprodi -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProker"
+                aria-expanded="true" aria-controls="collapseProker">
+                <i class="fas fa-fw fa-project-diagram"></i>
+                <span>Program Kerja</span>
+            </a>
+            <div id="collapseProker" class="collapse" aria-labelledby="headingProker" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded shadow-sm">
+                    <a class="collapse-item" href="{{ route('proker.index') }}">
+                        <i class="fas fa-clipboard-list fa-sm mr-2 text-primary"></i>Daftar Program
+                    </a>
+                    <a class="collapse-item" href="{{ route('proker.create') }}">
+                        <i class="fas fa-plus-circle fa-sm mr-2 text-primary"></i>Tambah Program
+                    </a>
                 </div>
-            </li>
-
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.kas.index') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Kas</span></a>
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
-            </li>
-            @endif
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
+        </li>
 
-            <!-- Sidebar Message -->
-            <div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
-                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
-                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
-            </div>
+        
 
-        </ul>
-        <!-- End of Sidebar -->
+        <!-- Nav Item - Kas for Kaprodi -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.kas.index') }}">
+                <i class="fas fa-fw fa-money-bill-wave"></i>
+                <span>Keuangan</span>
+            </a>
+        </li>
+    @endif
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler -->
+    <div class="text-center d-none d-md-inline mt-3">
+        <button class="rounded-circle border-0 bg-light" id="sidebarToggle">
+            <i class="fas fa-angle-left text-primary"></i>
+        </button>
+    </div>
+
+</ul>
+<!-- End of Sidebar -->

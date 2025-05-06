@@ -4,7 +4,7 @@
 
 @section('content')
 
-<style>
+<!-- <style>
     /* Main Container */
     .container {
         max-width: 1200px;
@@ -234,7 +234,7 @@
         animation-delay: calc(var(--order) * 0.1s);
         opacity: 0;
     }
-</style>
+</style> -->
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

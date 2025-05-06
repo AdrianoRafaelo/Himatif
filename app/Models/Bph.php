@@ -5,11 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Payment extends Model
+class Bph extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nim', 'nama', 'angkatan', 'prodi', 'bulan', 'tahun', 'tanggal_bayar',
+        'user_id',
+        'position',
+        'period',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(LocalUser::class, 'user_id');
+    }
 }

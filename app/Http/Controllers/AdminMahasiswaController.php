@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Payment;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class AdminMahasiswaController extends Controller
 {
@@ -17,92 +19,164 @@ class AdminMahasiswaController extends Controller
             return redirect()->route('login')->withErrors(['login' => 'Silakan login terlebih dahulu.']);
         }
 
-        
         $mahasiswa = [];
         $angkatanList = [];
         $payments = [];
-        $angkatanSelected = $angkatan; 
+        $angkatanSelected = $angkatan;
+        $bulan = $request->query('bulan');
+        $tahun = $request->query('tahun');
+        $namaBulan = '';
+
+        $bulanList = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+
+        if ($bulan && isset($bulanList[(int)$bulan])) {
+            $namaBulan = $bulanList[(int)$bulan];
+        }
 
         try {
-            $response = Http::withToken($token)
-                ->timeout(60)
-                ->retry(3, 1000)
-                ->get('https://cis.del.ac.id/api/library-api/mahasiswa?status=Aktif');
+            $startTime = microtime(true);
 
-            if ($response->successful()) {
-                $mahasiswaList = $response->json();
-                $mahasiswa = $mahasiswaList['data']['mahasiswa'] ?? [];
+            // Gunakan caching untuk data API
+            $mahasiswaList = Cache::remember('mahasiswa_aktif', 3600, function () use ($token) {
+                $response = Http::withToken($token)
+                    ->timeout(60)
+                    ->retry(3, 1000)
+                    ->get('https://cis.del.ac.id/api/library-api/mahasiswa?status=Aktif');
 
-                // Filter hanya mahasiswa dengan prodi DIII Teknologi Informasi
-                $mahasiswa = array_filter($mahasiswa, function ($mhs) {
-                    return $mhs['prodi_name'] == 'DIII Teknologi Informasi';
+                if (!$response->successful()) {
+                    throw new \Exception('Gagal mengambil data mahasiswa: ' . $response->status());
+                }
+
+                return $response->json();
+            });
+
+            $mahasiswa = $mahasiswaList['data']['mahasiswa'] ?? [];
+
+            // Filter hanya mahasiswa dengan prodi DIII Teknologi Informasi
+            $mahasiswa = array_filter($mahasiswa, function ($mhs) {
+                return $mhs['prodi_name'] == 'DIII Teknologi Informasi';
+            });
+
+            // Ambil semua angkatan yang tersedia untuk tab
+            $angkatanList = array_unique(array_column($mahasiswa, 'angkatan'));
+            sort($angkatanList);
+
+            // Jika angkatan tidak ditentukan, redirect ke angkatan pertama
+            if (!$angkatan && !empty($angkatanList)) {
+                return redirect()->route('admin.kas.index', [
+                    'angkatan' => $angkatanList[0],
+                    'bulan' => $bulan,
+                    'tahun' => $tahun
+                ]);
+            }
+
+            // Filter berdasarkan angkatan yang dipilih
+            if ($angkatan) {
+                $mahasiswa = array_filter($mahasiswa, function ($mhs) use ($angkatan) {
+                    return $mhs['angkatan'] == $angkatan;
                 });
+            } else {
+                $mahasiswa = [];
+            }
 
-                // Ambil semua angkatan yang tersedia untuk tab
-                $angkatanList = array_unique(array_column($mahasiswa, 'angkatan'));
-                sort($angkatanList); // Urutkan angkatan
-
-                // Jika angkatan tidak ditentukan, redirect ke angkatan pertama
-                if (!$angkatan && !empty($angkatanList)) {
-                    return redirect()->route('admin.kas.index', ['angkatan' => $angkatanList[0]]);
-                }
-
-                // Filter berdasarkan angkatan yang dipilih
-                if ($angkatan) {
-                    $mahasiswa = array_filter($mahasiswa, function ($mhs) use ($angkatan) {
-                        return $mhs['angkatan'] == $angkatan;
-                    });
-                } else {
-                    $mahasiswa = []; // Jika tidak ada angkatan, kosongkan data
-                }
-
-                // Ambil data pembayaran untuk menentukan status checkbox
+            // Ambil data pembayaran berdasarkan bulan dan tahun
+            if ($bulan && $tahun && !empty($mahasiswa)) {
                 $payments = Payment::whereIn('nim', array_column($mahasiswa, 'nim'))
-                    ->where('tanggal_bayar', now()->toDateString())
+                    ->where('bulan', $bulan)
+                    ->where('tahun', $tahun)
                     ->pluck('nim')
                     ->toArray();
-
-                Log::info('Data mahasiswa berhasil diambil untuk angkatan ' . ($angkatan ?? 'tidak ada'), ['count' => count($mahasiswa)]);
-            } else {
-                Log::warning('Gagal mengambil data mahasiswa dari API', ['status' => $response->status()]);
-                return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments'))
-                    ->withErrors(['error' => 'Gagal mengambil data mahasiswa: ' . $response->status()]);
             }
+
+            $executionTime = microtime(true) - $startTime;
+            Log::info('Data mahasiswa berhasil diambil untuk angkatan ' . ($angkatan ?? 'tidak ada'), [
+                'count' => count($mahasiswa),
+                'bulan' => $bulan,
+                'tahun' => $tahun,
+                'execution_time' => $executionTime,
+                'cache_used' => Cache::has('mahasiswa_aktif') ? 'Ya' : 'Tidak'
+            ]);
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
             Log::error('Gagal terhubung ke API: ' . $e->getMessage());
-            return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments'))
+            return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments', 'bulan', 'tahun', 'namaBulan'))
                 ->withErrors(['error' => 'Tidak dapat terhubung ke server API. Silakan coba lagi nanti.']);
         } catch (\Exception $e) {
             Log::error('Error di AdminMahasiswaController: ' . $e->getMessage());
-            return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments'))
+            return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments', 'bulan', 'tahun', 'namaBulan'))
                 ->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
 
-        return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments'));
+        return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments', 'bulan', 'tahun', 'namaBulan'));
     }
 
     public function store(Request $request)
     {
         $mahasiswaBayar = $request->input('bayar', []);
+        $bulan = $request->input('bulan');
+        $tahun = $request->input('tahun');
+
+        if (!$bulan || !$tahun) {
+            return back()->withErrors(['error' => 'Bulan dan tahun harus dipilih.']);
+        }
+
+        $bulanList = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+
+        $notifications = [];
 
         foreach ($mahasiswaBayar as $nim => $data) {
-            if (isset($data['bayar']) && $data['bayar'] == '1') { // Hanya simpan jika checkbox dicentang
+            if (isset($data['bayar']) && $data['bayar'] == '1') {
                 Payment::updateOrCreate(
-                    ['nim' => $nim, 'tanggal_bayar' => now()->toDateString()],
+                    [
+                        'nim' => $nim,
+                        'bulan' => $bulan,
+                        'tahun' => $tahun
+                    ],
                     [
                         'nama' => $data['nama'],
                         'angkatan' => $data['angkatan'],
                         'prodi' => $data['prodi'],
+                        'tanggal_bayar' => now()->toDateString()
                     ]
                 );
+
+                $message = "Uang kas {$bulanList[$bulan]} sudah dibayar";
+
+                // Simpan notifikasi ke database
+                Notification::create([
+                    'nim' => $nim,
+                    'message' => $message,
+                    'is_read' => false,
+                ]);
+
+                // Gunakan created_at untuk notifikasi admin
+                $date = now()->format('d M Y');
+
+                // Tambahkan notifikasi untuk admin (opsional)
+                $notifications[] = [
+                    'message' => $message,
+                    'date' => $date,
+                    'nim' => $nim
+                ];
             } else {
-                // Hapus pembayaran jika checkbox tidak dicentang
                 Payment::where('nim', $nim)
-                    ->where('tanggal_bayar', now()->toDateString())
+                    ->where('bulan', $bulan)
+                    ->where('tahun', $tahun)
                     ->delete();
             }
         }
 
+        if (!empty($notifications)) {
+            session()->flash('notifications', $notifications);
+        }
+
         return back()->with('success', 'Data pembayaran berhasil disimpan.');
     }
-}   
+}

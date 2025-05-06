@@ -10,6 +10,8 @@ use App\Http\Controllers\ProkerController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\studentController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\AdminBphController;
+use App\Http\Controllers\PublicController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,9 @@ Route::middleware('auth.custom')->group(function () {
 Route::middleware(['auth.admin'])->group(function () {
     Route::get('/admin/role', [AdminRoleController::class, 'index'])->name('admin.role.index');
     Route::post('/admin/role', [AdminRoleController::class, 'storeRole'])->name('admin.role.index');
+    Route::get('/admin/bph', [AdminBphController::class, 'index'])->name('admin.bph.index');
+    Route::post('/admin/bph', [AdminBphController::class, 'store'])->name('admin.bph.store');
+    Route::delete('/admin/bph/{id}', [AdminBphController::class, 'destroy'])->name('admin.bph.destroy');
 });
 
 
@@ -66,4 +71,6 @@ Route::get('/student', [studentController::class, 'index'])->name('student');
 Route::middleware('auth.custom')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('event', EventController::class);
 });
+
+Route::get('/organization', [PublicController::class, 'organization'])->name('organization');
 

@@ -12,7 +12,6 @@
                 <p class="body mb-5">HIMATIF berkomitmen untuk memfasilitasi pengembangan mahasiswa melalui berbagai kegiatan yang memberdayakan dan membuka peluang karir di dunia teknologi informasi.</p>
                 <div class="d-flex flex-wrap gap-3">
                     <a href="#" class="btn btn-primary">Tentang Kami</a>
-                    <a href="#" class="btn btn-outline">Gabung Bersama Kami</a>
                 </div>
             </div>
             <div class="col-lg-6">

@@ -33,6 +33,9 @@
                 </ul>
             </div>
         @endif
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
         <form action="{{ route('proker.store') }}" method="POST">
             @csrf
@@ -43,6 +46,9 @@
                     <i class="fas fa-file-alt input-icon"></i>
                 </div>
                 <input type="text" class="form-control" id="subject" name="subject" value="{{ old('subject') }}" placeholder="Masukkan perihal proker" required>
+                @error('subject')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
             </div>
             
             <div class="form-group mb-3">
@@ -52,6 +58,9 @@
                 </div>
                 <textarea class="form-control" id="description" name="description" rows="3" placeholder="Deskripsi detail program kerja">{{ old('description') }}</textarea>
                 <small class="form-text">Jelaskan secara detail mengenai program kerja yang akan dilaksanakan</small>
+                @error('description')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
             </div>
             
             <div class="form-section">
@@ -66,6 +75,9 @@
                             <i class="fas fa-bullseye input-icon"></i>
                         </div>
                         <input type="text" class="form-control" id="objective" name="objective" value="{{ old('objective') }}" placeholder="Tujuan proker">
+                        @error('objective')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
                 
@@ -76,6 +88,9 @@
                             <i class="fas fa-map-marker-alt input-icon"></i>
                         </div>
                         <input type="text" class="form-control" id="location" name="location" value="{{ old('location') }}" placeholder="Lokasi pelaksanaan">
+                        @error('location')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -87,7 +102,10 @@
                             <label for="planned_date">Rencana Tanggal</label>
                             <i class="far fa-calendar input-icon"></i>
                         </div>
-                        <input type="date" class="form-control" id="planned_date" name="planned_date" value="{{ old('planned_date') }}">
+                        <input type="month" class="form-control" id="planned_date" name="planned_date" value="{{ old('planned_date') }}">
+                        @error('planned_date')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -97,6 +115,9 @@
                             <i class="far fa-calendar-check input-icon"></i>
                         </div>
                         <input type="date" class="form-control" id="actual_date" name="actual_date" value="{{ old('actual_date') }}">
+                        @error('actual_date')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -106,16 +127,24 @@
             </div>
             
             <div class="form-group mb-3">
-                    <label for="funding_source_select">Sumber Dana</label>
-                    <div class="input-icon-container">
-                        <i class="fas fa-money-bill-wave input-icon"></i>
-                        <select class="form-control" id="funding_source_select" onchange="handleFundingSourceChange()">
-                            <option value="">-- Pilih Sumber Dana --</option>
-                            <option value="HIMATIF" {{ old('funding_source') == 'HIMATIF' ? 'selected' : '' }}>HIMATIF</option>
-                        </select>
-                    </div>
+                <label for="funding_source_select">Sumber Dana</label>
+                <div class="input-icon-container">
+                    <i class="fas fa-money-bill-wave input-icon"></i>
+                    <select class="form-control" id="funding_source_select" onchange="handleFundingSourceChange()">
+                        <option value="">-- Pilih Sumber Dana --</option>
+                        <option value="HIMATIF" {{ old('funding_source') == 'HIMATIF' ? 'selected' : '' }}>HIMATIF</option>
+                        <option value="Other" {{ old('funding_source') && old('funding_source') != 'HIMATIF' ? 'selected' : '' }}>Lainnya</option>
+                    </select>
                 </div>
-                
+                <div id="other_funding_container" style="display: {{ old('funding_source') && old('funding_source') != 'HIMATIF' ? 'block' : 'none' }};">
+                    <input type="text" class="form-control mt-2" id="other_funding_input" oninput="syncOtherFunding()" value="{{ old('funding_source') && old('funding_source') != 'HIMATIF' ? old('funding_source') : '' }}" placeholder="Masukkan sumber dana lain">
+                </div>
+                <input type="hidden" id="funding_source" name="funding_source" value="{{ old('funding_source') }}">
+                @error('funding_source')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            
             <div class="row">
                 <div class="col-md-6">
                     <div class="budget-card">
@@ -125,6 +154,9 @@
                                 <i class="fas fa-hand-holding-usd input-icon"></i>
                             </div>
                             <input type="number" class="form-control" id="planned_budget" name="planned_budget" value="{{ old('planned_budget') }}" placeholder="0">
+                            @error('planned_budget')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -136,6 +168,9 @@
                                 <i class="fas fa-coins input-icon"></i>
                             </div>
                             <input type="number" class="form-control" id="actual_budget" name="actual_budget" value="{{ old('actual_budget') }}" placeholder="0">
+                            @error('actual_budget')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -155,16 +190,30 @@
                             <option value="Pelaksanaan" {{ old('status') == 'Pelaksanaan' ? 'selected' : '' }}>Pelaksanaan</option>
                             <option value="Selesai" {{ old('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
                         </select>
+                        @error('status')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
                 
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <div class="input-icon-container">
-                            <label for="period">Periode</label>
+                            <label for="period">Periode <span class="text-danger">*</span></label>
                             <i class="fas fa-calendar-day input-icon"></i>
                         </div>
-                        <input type="text" class="form-control" id="period" name="period" value="{{ old('period') }}" placeholder="Contoh: 2025-2026">
+                        <select class="form-control" id="period" name="period" required @if(empty($periods)) disabled @endif>
+                            <option value="">-- Pilih Periode --</option>
+                            @foreach($periods as $p)
+                                <option value="{{ $p }}" {{ old('period') == $p ? 'selected' : '' }}>{{ $p }}</option>
+                            @endforeach
+                        </select>
+                        @error('period')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                        @if(empty($periods))
+                            <small class="text-danger">Tidak ada periode BPH tersedia. Tambahkan anggota BPH terlebih dahulu.</small>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -173,7 +222,7 @@
                 <a href="{{ route('proker.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i> Batal
                 </a>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" @if(empty($periods)) disabled @endif>
                     <i class="fas fa-save mr-2"></i> Simpan Proker
                 </button>
             </div>
@@ -192,7 +241,7 @@
 
         if (select.value === 'Other') {
             otherContainer.style.display = 'block';
-            hiddenInput.value = otherInput.value; // ambil dari input manual
+            hiddenInput.value = otherInput.value || '';
         } else {
             otherContainer.style.display = 'none';
             hiddenInput.value = select.value;
@@ -239,6 +288,4 @@
         });
     });
 </script>
-
-
 @endsection

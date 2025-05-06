@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('prokers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('created_by'); // relasi ke local_users
+            $table->unsignedBigInteger('created_by')->nullable();
 
             $table->string('subject');           // perihal
             $table->text('description')->nullable();     // deskripsi

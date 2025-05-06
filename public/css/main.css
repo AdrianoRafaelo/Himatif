@@ -175,7 +175,7 @@ body {
 }
 
 .carousel-item {
-    height: 1000px;
+    height: 500px;
     position: relative;
     overflow: hidden;
 }
