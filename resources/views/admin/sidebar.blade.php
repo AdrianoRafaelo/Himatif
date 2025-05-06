@@ -75,8 +75,6 @@
             </div>
         </li>
 
-        
-
         <!-- Nav Item - Struktur Organisasi BPH -->
         @if(session('user')['role'] === 'admin')
             <li class="nav-item">

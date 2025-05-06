@@ -9,7 +9,6 @@ use App\Http\Controllers\WorkprogramController;
 use App\Http\Controllers\ProkerController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\studentController;
-use App\Http\Controllers\EventController;
 use App\Http\Controllers\AdminBphController;
 use App\Http\Controllers\PublicController;
 
@@ -26,7 +25,6 @@ use App\Http\Controllers\PublicController;
 
 // Rute untuk halaman home (publik, tanpa autentikasi)
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/events', [EventController::class, 'tampilEventKePengguna'])->name('events');
 
 
 // Rute autentikasi
@@ -67,10 +65,8 @@ Route::middleware('auth.custom')->group(function () {
 Route::get('/student', [studentController::class, 'index'])->name('student');
 });
 
-// Admin Event Routes
-Route::middleware('auth.custom')->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('event', EventController::class);
-});
+
 
 Route::get('/organization', [PublicController::class, 'organization'])->name('organization');
+
 
