@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\News;
+
 
 class HomeController extends Controller
 {
@@ -13,6 +15,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $news = News::latest()->take(6)->get(); // ambil 6 berita terbaru, atau sesuaikan
+    return view('home', compact('news'));
     }
 } 

@@ -23,30 +23,15 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
+    
+
     @if(session('user')['role'] === 'admin' || session('user')['role'] === 'bendahara')
         <!-- Heading -->
         <div class="sidebar-heading text-uppercase">
             <span class="small font-weight-bold">Manajemen</span>
         </div>
 
-        <!-- Nav Item - Events Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEvents"
-                aria-expanded="true" aria-controls="collapseEvents">
-                <i class="fas fa-fw fa-calendar-alt"></i>
-                <span>Events</span>
-            </a>
-            <div id="collapseEvents" class="collapse" aria-labelledby="headingEvents" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded shadow-sm">
-                    <a class="collapse-item" href="{{ route('admin.event.create') }}">
-                        <i class="fas fa-plus-circle fa-sm mr-2 text-primary"></i>Buat Event
-                    </a>
-                    <a class="collapse-item" href="{{ route('admin.event.index') }}">
-                        <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Event
-                    </a>
-                </div>
-            </div>
-        </li>
+       
 
         <!-- Nav Item - Role -->
         <li class="nav-item">
@@ -104,6 +89,7 @@
             <i class="fas fa-fw fa-file-alt"></i>
             <span>Proposal</span>
         </a>
+        
         <div id="collapseProposal" class="collapse" aria-labelledby="headingProposal" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded shadow-sm">
                 
@@ -122,8 +108,29 @@
 
             </div>
         </div>
+    
+           </a>
     </li>
-@endif
+    @if(session('user')['role'] === 'admin')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.news.index') }}">
+                    <i class="fas fa-fw fa-sitemap"></i>
+                    <span>News</span>
+                </a>
+            </li>
+        @endif
+
+        @if(session('user')['role'] === 'admin')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.tentang.index') }}">
+                    <i class="fas fa-fw fa-sitemap"></i>
+                    <span>Visi Misi</span>
+                </a>
+            </li>
+        @endif
+
+
+        @endif
 
 
     @if(session('user')['role'] === 'kaprodi')

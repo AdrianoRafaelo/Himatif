@@ -144,64 +144,29 @@
             <p class="section-description">Tetap terinformasi dengan perkembangan terbaru di HIMATIF</p>
         </div>
         
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card news-card">
-                    <div class="news-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Kunjungan Industri" class="news-image">
-                        <span class="news-category-tag">Prestasi</span>
-                    </div>
-                    <div class="news-content">
-                        <div class="news-date">
-                            <i class="far fa-calendar-alt"></i> 20 Oktober 2023
+            <div class="row g-4">
+                @forelse ($news as $item)
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card news-card">
+                        <div class="news-image-wrapper">
+                            <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="news-image">
+                            <span class="news-category-tag">Berita</span> {{-- Ganti sesuai kategori jika ada --}}
                         </div>
-                        <h3 class="title-3 news-title">Tim HIMATIF Raih Juara 1 Kompetisi IoT Nasional</h3>
-                        <p class="news-excerpt">Tim mahasiswa HIMATIF berhasil menyabet juara pertama dalam ajang kompetisi Internet of Things tingkat nasional yang diselenggarakan oleh...</p>
-                        <div class="news-footer">
-                            <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+                        <div class="news-content">
+                            <h3 class="title-3 news-title">{{ $item->title }}</h3>
+                            <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}</p>
+                            <div class="news-footer">
+                                <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                @empty
+                <p class="text-center">Belum ada berita.</p>
+                @endforelse
             </div>
             
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card news-card">
-                    <div class="news-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Rapat Kerja" class="news-image">
-                        <span class="news-category-tag">Kegiatan</span>
-                    </div>
-                    <div class="news-content">
-                        <div class="news-date">
-                            <i class="far fa-calendar-alt"></i> 15 Oktober 2023
-                        </div>
-                        <h3 class="title-3 news-title">Rapat Kerja Pengurus HIMATIF Periode 2023/2024</h3>
-                        <p class="news-excerpt">Pengurus HIMATIF periode 2023/2024 mengadakan rapat kerja untuk merancang program kerja selama satu tahun ke depan. Dalam rapat ini dibahas...</p>
-                        <div class="news-footer">
-                            <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
             
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card news-card">
-                    <div class="news-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1560439514-4e9645039924?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pembukaan Pendaftaran" class="news-image">
-                        <span class="news-category-tag">Pengumuman</span>
-                    </div>
-                    <div class="news-content">
-                        <div class="news-date">
-                            <i class="far fa-calendar-alt"></i> 5 Oktober 2023
-                        </div>
-                        <h3 class="title-3 news-title">Pembukaan Pendaftaran Asisten Praktikum Semester Ganjil</h3>
-                        <p class="news-excerpt">HIMATIF membuka pendaftaran untuk menjadi asisten praktikum pada semester ganjil tahun akademik 2023/2024. Beberapa mata kuliah yang...</p>
-                        <div class="news-footer">
-                            <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         
         <div class="text-center mt-5">
             <a href="#" class="btn btn-outline">Lihat Semua Berita <i class="fas fa-arrow-right btn-icon"></i></a>

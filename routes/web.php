@@ -5,12 +5,13 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminRoleController;
 use App\Http\Controllers\AdminMahasiswaController;
-use App\Http\Controllers\WorkprogramController;
 use App\Http\Controllers\ProkerController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\studentController;
 use App\Http\Controllers\AdminBphController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\TentangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,7 @@ use App\Http\Controllers\PublicController;
 
 // Rute untuk halaman home (publik, tanpa autentikasi)
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
 
 
 // Rute autentikasi
@@ -48,6 +50,15 @@ Route::middleware(['auth.admin'])->group(function () {
     Route::get('/admin/bph', [AdminBphController::class, 'index'])->name('admin.bph.index');
     Route::post('/admin/bph', [AdminBphController::class, 'store'])->name('admin.bph.store');
     Route::delete('/admin/bph/{id}', [AdminBphController::class, 'destroy'])->name('admin.bph.destroy');
+
+    Route::get('/admin/news', [NewsController::class, 'index'])->name('admin.news.index'); 
+    Route::get('admin/news/create', [NewsController::class, 'create'])->name('news.create');
+    Route::post('admin/news', [NewsController::class, 'store'])->name('news.store');
+    Route::resource('news', NewsController::class);
+
+    Route::get('/admin/tentang', [TentangController::class, 'index'])->name('admin.tentang.index');
+
+
 });
 
 
@@ -56,17 +67,17 @@ Route::middleware('auth.custom')->prefix('admin')->name('admin.')->group(functio
     Route::get('proposals/create', [ProposalController::class, 'create'])->name('proposals.create');
     Route::post('proposals', [ProposalController::class, 'store'])->name('proposals.store');
     // Kaprodi - lihat, setujui, tolak proposal
-Route::get('/kaprodi/proposals', [ProposalController::class, 'kaprodiIndex'])->name('kaprodi.proposals.index');
-Route::patch('/kaprodi/proposals/{proposal}/approve', [ProposalController::class, 'approve'])->name('kaprodi.proposals.approve');
-Route::patch('/kaprodi/proposals/{proposal}/reject', [ProposalController::class, 'reject'])->name('kaprodi.proposals.reject');
+    Route::get('/kaprodi/proposals', [ProposalController::class, 'kaprodiIndex'])->name('kaprodi.proposals.index');
+    Route::patch('/kaprodi/proposals/{proposal}/approve', [ProposalController::class, 'approve'])->name('kaprodi.proposals.approve');
+    Route::patch('/kaprodi/proposals/{proposal}/reject', [ProposalController::class, 'reject'])->name('kaprodi.proposals.reject');
 });
 
 Route::middleware('auth.custom')->group(function () {
-Route::get('/student', [studentController::class, 'index'])->name('student');
+    Route::get('/student', [studentController::class, 'index'])->name('student');
 });
 
 
 
 Route::get('/organization', [PublicController::class, 'organization'])->name('organization');
-
+Route::get('/news', [NewsController::class, 'news'])->name('news');
 
