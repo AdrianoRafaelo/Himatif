@@ -36,8 +36,8 @@ return new class extends Migration
     public function down()
     {
         // Drop table yang punya foreign key ke local_users terlebih dahulu
-        Schema::dropIfExists('payments'); // Contoh
-        Schema::dropIfExists('local_users');
+        Schema::dropIfExists('prokers'); // Contoh
+        Schema::dropIfExists('bphs');
     }
     
 };

@@ -9,9 +9,12 @@ use App\Http\Controllers\ProkerController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\studentController;
 use App\Http\Controllers\AdminBphController;
+use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\TentangController;
+use App\Http\Controllers\KeuanganController;
+use App\Models\Galeri;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +44,13 @@ Route::middleware('auth.custom')->group(function () {
     Route::get('/admin/kas/{angkatan?}', [AdminMahasiswaController::class, 'index'])->name('admin.kas.index');
     Route::post('/admin/kas', [AdminMahasiswaController::class, 'store'])->name('admin.kas.store');
     Route::resource('proker', ProkerController::class);
+
+    Route::get('/admin/keuangan', [KeuanganController::class, 'index'])->name('admin.keuangan.index');
+    Route::get('/admin/keuangan/create', [KeuanganController::class, 'create'])->name('admin.keuangan.create');
+    Route::post('/admin/keuangan', [KeuanganController::class, 'store'])->name('admin.keuangan.store');
+    Route::get('/admin/keuangan/{id}/edit', [KeuanganController::class, 'edit'])->name('admin.keuangan.edit');
+    Route::put('/admin/keuangan/{id}', [KeuanganController::class, 'update'])->name('admin.keuangan.update');
+    Route::delete('/admin/keuangan/{id}', [KeuanganController::class, 'destroy'])->name('admin.keuangan.destroy'); 
 });
 
 // Rute khusus untuk admin
@@ -57,6 +67,25 @@ Route::middleware(['auth.admin'])->group(function () {
     Route::resource('news', NewsController::class);
 
     Route::get('/admin/tentang', [TentangController::class, 'index'])->name('admin.tentang.index');
+    Route::post('/admin/tentang', [TentangController::class, 'store'])->name('admin.tentang.store');
+    Route::put('/admin/tentang/{tentang}', [TentangController::class, 'update'])->name('admin.tentang.update');
+    Route::get('admin/tentang/create', [TentangController::class, 'create'])->name('admin.tentang.create');
+    Route::post('/tentang', [TentangController::class, 'store'])->name('tentang.store');
+    Route::get('/admin/tentang/{id}', [TentangController::class, 'show'])->name('admin.tentang.show');
+    Route::get('/tentang/{id}/edit', [TentangController::class, 'edit'])->name('admin.tentang.edit');
+    Route::put('/tentang/{id}', [TentangController::class, 'update'])->name('tentang.update');
+    Route::delete('/tentang/{id}', [TentangController::class, 'destroy'])->name('tentang.destroy');
+    Route::resource('tentang', TentangController::class);
+
+    Route::get('/admin/galeri', [GaleriController::class, 'index'])->name('admin.galeri.index');
+    Route::get('/create', [GaleriController::class, 'create'])->name('admin.galeri.create');
+    Route::post('/store', [GaleriController::class, 'store'])->name('galeri.store');
+    Route::get('/edit/{id}', [GaleriController::class, 'edit'])->name('admin.galeri.edit');
+    Route::put('/update/{id}', [GaleriController::class, 'update'])->name('galeri.update');
+    Route::delete('/tentang/{id}', [GaleriController::class, 'destroy'])->name('admin.galeri.destroy');
+
+
+
 
 
 });
@@ -80,4 +109,9 @@ Route::middleware('auth.custom')->group(function () {
 
 Route::get('/organization', [PublicController::class, 'organization'])->name('organization');
 Route::get('/news', [NewsController::class, 'news'])->name('news');
+Route::get('/tentang', [TentangController::class, 'visi'])->name('tentang');
+Route::get('/keuangan', [App\Http\Controllers\KeuanganController::class, 'userIndex'])->name('keuangan');
+Route::get('/galeri', [GaleriController::class, 'galeri'])->name('galeri');
+
+
 

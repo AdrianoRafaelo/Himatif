@@ -15,7 +15,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $news = News::latest()->take(6)->get(); // ambil 6 berita terbaru, atau sesuaikan
+        $news = News::latest()->take(3)->get(); 
     return view('home', compact('news'));
     }
 } 

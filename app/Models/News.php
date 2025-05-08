@@ -13,4 +13,10 @@ class News extends Model
         'content',
         'image',
     ];  
+
+
+    public function creator()
+{
+    return $this->belongsTo(LocalUser::class, 'created_by');
+}
 }

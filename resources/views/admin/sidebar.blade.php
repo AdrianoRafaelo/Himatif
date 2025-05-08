@@ -74,10 +74,18 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.kas.index') }}">
                 <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span>Keuangan</span>
+                <span>Uang kas</span>
             </a>
         </li>
-    @endif
+
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.keuangan.index') }}">
+            <i class="fas fa-fw fa-sitemap"></i>
+            <span>Laporan Keuangan</span>
+        </a>
+    </li>
+@endif
     
    
 
@@ -121,14 +129,29 @@
         @endif
 
         @if(session('user')['role'] === 'admin')
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.tentang.index') }}">
-                    <i class="fas fa-fw fa-sitemap"></i>
-                    <span>Visi Misi</span>
-                </a>
-            </li>
-        @endif
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.galeri.index') }}">
+                <i class="fas fa-fw fa-sitemap"></i>
+                <span>Galeri</span>
+            </a>
+        </li>
+    @endif
 
+
+
+        @if(session('user')['role'] === 'admin')
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-fw fa-sitemap"></i>
+                <span>Visi Misi</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ route('admin.tentang.index') }}">Lihat Visi & Misi</a>
+                <a class="dropdown-item" href="{{ route('admin.tentang.create') }}">Buat Visi & Misi</a>
+            </div>
+        </li>
+        
+        @endif
 
         @endif
 
@@ -159,7 +182,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.kas.index') }}">
                 <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span>Keuangan</span>
+                <span>Uang kas</span>
             </a>
         </li>
     @endif

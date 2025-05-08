@@ -46,8 +46,8 @@
                                 <option value="">-- Pilih Posisi --</option>
                                 <option value="Ketua">Ketua</option>
                                 <option value="Wakil Ketua">Wakil Ketua</option>
-                                <option value="Sekertaris 1">Sekertaris 1</option>
-                                <option value="Sekertaris 2">Sekertaris 2</option>
+                                <option value="Sekretaris 1">Sekretaris 1</option>
+                                <option value="Sekretaris 2">Sekretaris 2</option>
                                 <option value="Bendahara 1">Bendahara 1</option>
                                 <option value="Bendahara 2">Bendahara 2</option>
                             </select>

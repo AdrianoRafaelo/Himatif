@@ -33,7 +33,7 @@ class AdminBphController extends Controller
         $bphs = Bph::with('user')
                    ->get()
                    ->sortBy(function ($bph) use ($positionOrder) {
-                       return $positionOrder[$bph->position] ?? 999; // Jabatan yang tidak ada di hierarki akan diurutkan terakhir
+                       return $positionOrder[$bph->position] ?? 999; 
                    });
 
         $mahasiswa = [];
@@ -89,7 +89,7 @@ class AdminBphController extends Controller
         $request->validate([
             'nim' => 'required|string',
             'position' => 'required|string|in:Ketua,Wakil Ketua,Sekretaris 1,Sekretaris 2,Bendahara 1,Bendahara 2',
-            'period' => 'required|string|regex:/^\d{4}-\d{4}$/', // Format: 2025-2026
+            'period' => 'required|string|regex:/^\d{4}-\d{4}$/', 
         ]);
 
         // Validasi NIM melalui API
