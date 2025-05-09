@@ -67,21 +67,18 @@
                 <span>Detail Proker</span>
             </div>
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <div class="input-icon-container">
-                            <label for="objective">Tujuan</label>
-                            <i class="fas fa-bullseye input-icon"></i>
-                        </div>
-                        <input type="text" class="form-control" id="objective" name="objective" value="{{ old('objective') }}" placeholder="Tujuan proker">
-                        @error('objective')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
+            <div class="form-group mb-3">
+                <div class="input-icon-container">
+                    <label for="objective">Tujuan</label>
+                    <i class="fas fa-bullseye input-icon"></i>
                 </div>
+                <textarea class="form-control" id="objective" name="objective" rows="3" placeholder="Tujuan proker">{{ old('objective') }}</textarea>
+                @error('objective')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
                 
-                <div class="col-md-6">
+                
                     <div class="form-group mb-3">
                         <div class="input-icon-container">
                             <label for="location">Lokasi</label>
@@ -93,13 +90,13 @@
                         @enderror
                     </div>
                 </div>
-            </div>
+            
             
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <div class="input-icon-container">
-                            <label for="planned_date">Rencana Tanggal</label>
+                            <label for="planned_date">Rencana</label>
                             <i class="far fa-calendar input-icon"></i>
                         </div>
                         <input type="month" class="form-control" id="planned_date" name="planned_date" value="{{ old('planned_date') }}">

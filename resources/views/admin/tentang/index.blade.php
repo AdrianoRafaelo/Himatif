@@ -145,12 +145,17 @@
                             <td class="p-2 border">{{ $loop->iteration }}</td>
                             <td class="p-2 border">{!! Str::limit(strip_tags($item->konten), 100) !!}</td>
                             <td class="p-2 border">
-                                <a href="{{ route('admin.tentang.show', $item->id) }}" class="text-blue-500 hover:underline">Lihat</a> |
-                                <a href="{{ route('admin.tentang.edit', $item->id) }}" class="text-yellow-500 hover:underline">Edit</a>
+                                <a href="{{ route('admin.tentang.show', $item->id) }}" class="text-blue-500 hover:underline">
+                                    <i class="fas fa-eye"></i> <!-- Ikon Lihat -->
+                                </a> |
+                                <a href="{{ route('admin.tentang.edit', $item->id) }}" class="text-yellow-500 hover:underline">
+                                    <i class="fas fa-edit"></i> <!-- Ikon Edit -->
+                                </a>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
+                
             </table>
         @else
             <p>Tidak ada data visi misi.</p>

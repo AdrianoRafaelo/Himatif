@@ -44,6 +44,12 @@ class ProkerController extends Controller
 
         $plannedDate = $request->planned_date ? $request->planned_date . '-01' : null;
 
+        if ($plannedDate && $request->actual_date && $request->actual_date < $plannedDate) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['actual_date' => 'Tanggal realisasi tidak boleh lebih awal dari tanggal rencana.']);
+        }
+        
         Proker::create([
             'subject' => $request->subject,
             'description' => $request->description,

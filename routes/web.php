@@ -50,7 +50,8 @@ Route::middleware('auth.custom')->group(function () {
     Route::post('/admin/keuangan', [KeuanganController::class, 'store'])->name('admin.keuangan.store');
     Route::get('/admin/keuangan/{id}/edit', [KeuanganController::class, 'edit'])->name('admin.keuangan.edit');
     Route::put('/admin/keuangan/{id}', [KeuanganController::class, 'update'])->name('admin.keuangan.update');
-    Route::delete('/admin/keuangan/{id}', [KeuanganController::class, 'destroy'])->name('admin.keuangan.destroy'); 
+    Route::delete('/admin/keuangan/{id}', [KeuanganController::class, 'destroy'])->name('admin.keuangan.destroy');
+     
 });
 
 // Rute khusus untuk admin
