@@ -178,6 +178,30 @@
         </div>
     </div>
 </li>
+<li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEvent"
+            aria-expanded="true" aria-controls="collapseEvent">
+            <i class="fas fa-fw fa-calendar-alt"></i>
+            <span>Event</span>
+        </a>
+        <div id="collapseEvent" class="collapse" aria-labelledby="headingEvent" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded shadow-sm">
+                <a class="collapse-item" href="{{ route('admin.event.index') }}">
+                    <i class="fas fa-eye fa-sm mr-2 text-primary"></i>Lihat Event
+                </a>
+                <a class="collapse-item" href="{{ route('admin.event.create') }}">
+                    <i class="fas fa-plus-circle fa-sm mr-2 text-primary"></i>Tambah Event
+                </a>
+            </div>
+        </div>
+    </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('registrations.index') }}">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Daftar Pendaftar</span>
+            </a>
+        </li>
+
 @endif
 
 

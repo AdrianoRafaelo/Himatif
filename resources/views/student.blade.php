@@ -8,11 +8,10 @@
             <div class="col-lg-6 mb-5 mb-lg-0">
                 <span class="section-subheading">Selamat Datang di</span>
                 <h1 class="display-title">Himpunan Mahasiswa <span class="text-gradient">Teknologi Informasi</span></h1>
-                <p class="body-large mb-4">Wadah bagi mahasiswa Teknik Informatika untuk mengembangkan potensi akademik, soft skill, dan memperluas jaringan profesional.</p>
+                <p class="body-large mb-4">Wadah bagi mahasiswa Teknologi Informasi untuk mengembangkan potensi akademik, soft skill, dan memperluas jaringan profesional.</p>
                 <p class="body mb-5">HIMATIF berkomitmen untuk memfasilitasi pengembangan mahasiswa melalui berbagai kegiatan yang memberdayakan dan membuka peluang karir di dunia teknologi informasi.</p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="#" class="btn btn-primary">Tentang Kami</a>
-                    <a href="#" class="btn btn-outline">Gabung Bersama Kami</a>
+                    <a href="{{ route('tentang') }}" class="btn btn-primary">Tentang Kami</a>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -44,92 +43,66 @@
             <p class="section-description">Ikuti berbagai acara menarik yang akan diselenggarakan oleh HIMATIF</p>
         </div>
         
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card event-card">
-                    <div class="event-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Webinar Teknologi" class="event-image">
-                        <div class="event-date-tag">
-                            <span class="event-day">25</span>
-                            <span class="event-month">Nov</span>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <div class="event-meta">
-                            <div class="event-meta-item">
-                                <i class="far fa-clock"></i> 14:00 - 16:00 WIB
-                            </div>
-                            <div class="event-meta-item">
-                                <i class="fas fa-map-marker-alt"></i> Auditorium
-                            </div>
-                        </div>
-                        <h3 class="title-3 event-title">Artificial Intelligence: Masa Depan Teknologi</h3>
-                        <p class="event-description">Webinar interaktif tentang perkembangan AI dan dampaknya terhadap industri teknologi di masa depan.</p>
-                        <div class="event-footer">
-                            <span class="badge badge-primary event-category">Webinar</span>
-                            <a href="#" class="btn btn-text">Daftar <i class="fas fa-arrow-right btn-icon"></i></a>
-                        </div>
+        @if ($events->isEmpty())
+    <p>Tidak ada event yang tersedia saat ini.</p>
+    @else
+    <div class="row">
+        @foreach ($events as $event)
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card event-card h-100 shadow-sm">
+                <div class="event-image-wrapper position-relative">
+                    @if($event->banner_path)
+                    <img src="{{ asset('storage/' . $event->banner_path) }}" alt="{{ $event->name }}" class="event-image w-100" style="height: 220px; object-fit: cover;">
+                    @else
+                    <div style="height: 220px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">No Image</div>
+                    @endif
+
+                    <!-- Tag Tanggal -->
+                    <div class="position-absolute top-0 start-0 m-2 text-center px-2 py-1 rounded bg-white bg-opacity-75">
+                        <span class="d-block fw-bold" style="font-size: 1.4rem; line-height: 1;">{{ \Carbon\Carbon::parse($event->start_date)->format('d') }}</span>
+                        <span style="font-size: 0.8rem;">{{ strtoupper(\Carbon\Carbon::parse($event->start_date)->format('M')) }}</span>
                     </div>
                 </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card event-card">
-                    <div class="event-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Workshop Coding" class="event-image">
-                        <div class="event-date-tag">
-                            <span class="event-day">10</span>
-                            <span class="event-month">Des</span>
+
+                <div class="event-content p-3">
+                    <div class="event-meta mb-2 text-muted small">
+                        <div class="event-meta-item mb-1">
+                            <i class="far fa-clock me-1"></i>
+                            {{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }} - {{ \Carbon\Carbon::parse($event->end_date)->format('H:i') }} WIB
+                        </div>
+                        <div class="event-meta-item">
+                            <i class="fas fa-map-marker-alt me-1"></i> {{ $event->location }}
                         </div>
                     </div>
-                    <div class="event-content">
-                        <div class="event-meta">
-                            <div class="event-meta-item">
-                                <i class="far fa-clock"></i> 09:00 - 16:00 WIB
-                            </div>
-                            <div class="event-meta-item">
-                                <i class="fas fa-map-marker-alt"></i> Lab Komputer
-                            </div>
-                        </div>
-                        <h3 class="title-3 event-title">Bootcamp Web Development</h3>
-                        <p class="event-description">Workshop intensif 3 hari untuk mempelajari dasar-dasar pengembangan web modern menggunakan React dan Node.js.</p>
-                        <div class="event-footer">
-                            <span class="badge badge-primary event-category">Workshop</span>
-                            <a href="#" class="btn btn-text">Daftar <i class="fas fa-arrow-right btn-icon"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card event-card">
-                    <div class="event-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Kompetisi Coding" class="event-image">
-                        <div class="event-date-tag">
-                            <span class="event-day">15</span>
-                            <span class="event-month">Jan</span>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <div class="event-meta">
-                            <div class="event-meta-item">
-                                <i class="far fa-clock"></i> 08:00 - 20:00 WIB
-                            </div>
-                            <div class="event-meta-item">
-                                <i class="fas fa-map-marker-alt"></i> Gedung Serbaguna
-                            </div>
-                        </div>
-                        <h3 class="title-3 event-title">Hackathon: Solusi Digital untuk Pendidikan</h3>
-                        <p class="event-description">Kompetisi pemrograman 12 jam untuk mengembangkan aplikasi inovatif yang memecahkan masalah pendidikan.</p>
-                        <div class="event-footer">
-                            <span class="badge badge-primary event-category">Kompetisi</span>
-                            <a href="#" class="btn btn-text">Daftar <i class="fas fa-arrow-right btn-icon"></i></a>
-                        </div>
+
+                    <h5 class="event-title mb-2">{{ $event->name }}</h5>
+                    <p class="event-description text-muted mb-3">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
+
+                    <div class="event-footer d-flex justify-content-between align-items-center">
+                        <!-- Status Warna -->
+                        @php
+                            $status = strtolower($event->status);
+                            $statusColor = match($status) {
+                                'completed' => 'text-success',
+                                'cancelled' => 'text-danger',
+                                default => 'text-secondary'
+                            };
+                        @endphp
+                        <span class="{{ $statusColor }} fw-bold text-capitalize">{{ $event->status }}</span>
+
+                        @if(session('user') && session('user')['role'] === 'mahasiswa')
+                        <a href="{{ route('student.register.create', $event->id) }}" class="btn btn-sm btn-outline-primary">
+                            Daftar <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-        
+        @endforeach
+    </div>
+    @endif            
+                    
         <div class="text-center mt-5">
             <a href="#" class="btn btn-outline">Lihat Semua Acara <i class="fas fa-arrow-right btn-icon"></i></a>
         </div>
@@ -145,50 +118,32 @@
             <p class="section-description">Tetap terinformasi dengan perkembangan terbaru di HIMATIF</p>
         </div>
         
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card news-card">
-                    <div class="news-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pengumuman HIMATIF" class="news-image">
-                    </div>
-                    <div class="news-content">
-                        <h3 class="title-3 news-title">Pendaftaran Anggota HIMATIF 2025 Dibuka</h3>
-                        <p class="news-description">Jangan lewatkan kesempatan untuk bergabung dengan HIMATIF dan kembangkan potensi dirimu bersama kami!</p>
-                        <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card news-card">
-                    <div class="news-image-wrapper">
-                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pengumuman HIMATIF" class="news-image">
-                    </div>
-                    <div class="news-content">
-                        <h3 class="title-3 news-title">Workshop Data Science untuk Pemula</h3>
-                        <p class="news-description">Belajar tentang dasar-dasar data science dan bagaimana memulai perjalanan karirmu di bidang ini.</p>
-                        <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+            <div class="row g-4">
+                @forelse ($news as $item)
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card news-card">
+                        <div class="news-image-wrapper">
+                            <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="news-image">
+                            <span class="news-category-tag">Berita</span> {{-- Ganti sesuai kategori jika ada --}}
+                        </div>
+                        <div class="news-content">
+                            <h3 class="title-3 news-title">{{ $item->title }}</h3>
+                            <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}</p>
+                            <div class="news-footer">
+                                <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                @empty
+                <p class="text-center">Belum ada berita.</p>
+                @endforelse
             </div>
-
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card news-card">
-                    <div class="news-image-wrapper">
-                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pengumuman HIMATIF" class="news-image">
-                    </div>
-                    <div class="news-content">
-                        <h3 class="title-3 news-title">HIMATIF Gelar Lomba Pemrograman Nasional</h3>
-                        <p class="news-description">Ikuti lomba pemrograman tingkat nasional yang diadakan oleh HIMATIF untuk mengasah keterampilan codingmu!</p>
-                        <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+            
+            
+        
         <div class="text-center mt-5">
-            <a href="#" class="btn btn-outline">Lihat Semua Berita <i class="fas fa-arrow-right btn-icon"></i></a>
+            <a href="{{ route('news') }}" class="btn btn-outline">Lihat Semua Berita <i class="fas fa-arrow-right btn-icon"></i></a>
         </div>
     </div>
-</section>
-@endsection
+</section>@endsection

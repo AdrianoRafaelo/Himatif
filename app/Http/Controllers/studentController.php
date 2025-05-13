@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use App\Models\News;
+use App\Models\Event;
 
-class studentController extends Controller
+
+class StudentController extends Controller
 {
     /**
      * Menampilkan dashboard mahasiswa.
@@ -17,12 +19,15 @@ class studentController extends Controller
         // Ambil data user dari session
         $user = session('user');
 
-        // Periksa apakah user yang login adalah mahasiswa
-        if ($user['role'] !== 'mahasiswa') {
-            return redirect('/')->with('error', 'Akses ditolak. Anda bukan mahasiswa.');
+        // Cek apakah session ada dan role adalah mahasiswa
+        if (!$user || !isset($user['role']) || $user['role'] !== 'mahasiswa') {
+            return redirect('/')->with('error', 'Akses ditolak. Anda bukan mahasiswa atau belum login.');
         }
 
-        // Menampilkan halaman dashboard mahasiswa
-        return view('student', compact('user'));
+        // Ambil data berita terbaru
+    $news = News::latest()->take(3)->get();
+    $events = Event::latest()->take(3)->get(); 
+
+    return view('student', compact('user', 'news', 'events'));
     }
 }

@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('nim'); // Kolom untuk NIM mahasiswa
             $table->string('message');
             $table->boolean('is_read')->default(false);
+            $table->unsignedBigInteger('created_by')->nullable(); // Foreign key ke local_users
+            $table->foreign('created_by')->references('id')->on('local_users')->onDelete('cascade');
             $table->timestamps();
         });
     }

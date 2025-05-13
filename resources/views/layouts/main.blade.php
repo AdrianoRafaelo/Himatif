@@ -192,7 +192,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto py-2">
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('home') }}">Beranda</a></li>
-                    <li class="nav-item mx-2"><a class="nav-link" href="#">Acara</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link" href="{{ route('events') }}">Acara</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('galeri') }}">Galery</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('keuangan') }}">Keuangan</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('news') }}">Berita</a></li>

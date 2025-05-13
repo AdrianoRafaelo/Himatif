@@ -1,322 +1,150 @@
 @extends('admin.layouts')
 
-@section('title', 'Tambah Event')
-
 @section('content')
-<style>
-    /* Main Container - Glass Morphism Effect */
-    .container-fluid {
-        max-width: 900px;
-        margin: 2rem auto;
-        padding: 2.5rem;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-    }
+<div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+        <div class="container-fluid">
+            <h1 class="h3 mb-4 text-gray-800">Tambah Event</h1>
 
-    /* Title with Gradient Text */
-    h1 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin-bottom: 2.5rem;
-        background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        position: relative;
-        padding-bottom: 1rem;
-    }
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Form Tambah Event</h6>
+                </div>
+                <div class="card-body">
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
 
-    h1::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 60px;
-        height: 4px;
-        background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-        border-radius: 2px;
-    }
+                    <form action="{{ route('admin.event.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="proker_id">Proker</label>
+                            <select name="proker_id" id="proker_id" class="form-control @error('proker_id') is-invalid @enderror" required style="color: #000; background-color: #fff;">
+                                <option value="">Pilih Proker</option>
+                                @if($prokers->isEmpty())
+                                <option value="" disabled>Tidak ada proker tersedia</option>
+                                @else
+                                @foreach ($prokers as $proker)
+                                <option value="{{ $proker->id }}" {{ old('proker_id') == $proker->id ? 'selected' : '' }} style="color: #000;">
+                                    {{ $proker->subject ?? 'Nama Proker Tidak Tersedia' }}
+                                </option>
+                                @endforeach
+                                @endif
+                            </select>
+                            @error('proker_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="proposal_id">Proposal (Opsional)</label>
+                            <select name="proposal_id" id="proposal_id" class="form-control" style="color: #000; background-color: #fff;">
+                                <option value="">Tidak Ada</option>
+                                @if($proposals->isEmpty())
+                                    <option value="" disabled>Tidak ada proposal tersedia</option>
+                                @else
+                                    @foreach ($proposals as $proposal)
+                                        <option value="{{ $proposal->id }}" {{ old('proposal_id') == $proposal->id ? 'selected' : '' }}>
+                                            {{ $proposal->title ?? 'Judul Proposal Tidak Tersedia' }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            @error('proposal_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Nama Event</label>
+                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                            @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Deskripsi</label>
+                            <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror" rows="4">{{ old('description') }}</textarea>
+                            @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Lokasi</label>
+                            <input type="text" name="location" id="location" class="form-control @error('location') is-invalid @enderror" value="{{ old('location') }}" required>
+                            @error('location')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="start_date">Tanggal Mulai</label>
+                            <input type="datetime-local" name="start_date" id="start_date" class="form-control @error('start_date') is-invalid @enderror" value="{{ old('start_date') }}" required>
+                            @error('start_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">Tanggal Selesai</label>
+                            <input type="datetime-local" name="end_date" id="end_date" class="form-control @error('end_date') is-invalid @enderror" value="{{ old('end_date') }}" required>
+                            @error('end_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required style="color: #000; background-color: #fff;">
+                                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="scheduled" {{ old('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                                <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                                <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            </select>
+                            @error('status')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Catatan</label>
+                            <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" rows="4">{{ old('notes') }}</textarea>
+                            @error('notes')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="banner_path">Banner</label>
+                            <input type="file" name="banner_path" id="banner_path" class="form-control-file @error('banner_path') is-invalid @enderror">
+                            @error('banner_path')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="mb-3">
+                                <label for="angkatan_akses" class="form-label">Angkatan yang Bisa Mendaftar</label>
+                                <input type="text" name="angkatan_akses" id="angkatan_akses" class="form-control @error('angkatan_akses') is-invalid @enderror" value="{{ old('angkatan_akses') }}" placeholder="Contoh: 2021,2022,2023" {{ old('semua_angkatan') ? 'disabled' : '' }}>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" value="1" id="semua_angkatan" name="semua_angkatan" {{ old('semua_angkatan') ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="semua_angkatan">
+                                        Untuk semua angkatan
+                                    </label>
+                                </div>
+                                <small class="text-muted">Pisahkan dengan koma jika lebih dari satu angkatan. Jika memilih "Untuk semua angkatan", input manual akan diabaikan.</small>
+                                @error('angkatan_akses')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-    /* Form Elements - Modern Style */
-    .form-label {
-        display: block;
-        font-weight: 600;
-        color: #4b5563;
-        margin-bottom: 0.8rem;
-        font-size: 1rem;
-        letter-spacing: 0.3px;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 1rem 1.2rem;
-        font-size: 0.95rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background-color: rgba(249, 250, 251, 0.7);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #6366f1;
-        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-        background-color: #fff;
-    }
-
-    /* Floating Label Effect */
-    .form-group {
-        position: relative;
-        margin-bottom: 2rem;
-    }
-
-    .form-group.focused .form-label {
-        transform: translateY(-120%) scale(0.9);
-        color: #6366f1;
-    }
-
-    /* Select Dropdown - Custom Arrow */
-    select.form-control {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1.2rem;
-    }
-
-    /* File Input - Modern Style */
-    input[type="file"] {
-        padding: 0;
-        border: 2px dashed #e5e7eb;
-        background-color: rgba(255, 255, 255, 0.5);
-        transition: all 0.3s ease;
-    }
-
-    input[type="file"]:hover {
-        border-color: #a5b4fc;
-        background-color: rgba(239, 246, 255, 0.5);
-    }
-
-    input[type="file"]::file-selector-button {
-        padding: 0.75rem 1.25rem;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        margin-right: 1rem;
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }
-
-    input[type="file"]::file-selector-button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
-    }
-
-    /* Buttons - Animated Gradient */
-    .btn {
-        padding: 1rem 2rem;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-        cursor: pointer;
-        border: none;
-        position: relative;
-        overflow: hidden;
-        z-index: 1;
-    }
-
-    .btn-success {
-        background: linear-gradient(135deg, #10b981, #3b82f6);
-        color: white;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-    }
-
-    .btn-success::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #3b82f6, #10b981);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        z-index: -1;
-    }
-
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
-    }
-
-    .btn-success:hover::before {
-        opacity: 1;
-    }
-
-    .btn-secondary {
-        background: white;
-        color: #4b5563;
-        border: 2px solid #e5e7eb;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .btn-secondary:hover {
-        background: #f9fafb;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        border-color: #d1d5db;
-    }
-
-    /* Button Icons */
-    .btn i {
-        font-size: 1.1rem;
-        transition: transform 0.3s ease;
-    }
-
-    .btn:hover i {
-        transform: scale(1.1);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .container-fluid {
-            padding: 1.5rem;
-            margin: 1rem;
-            border-radius: 16px;
-        }
-        
-        h1 {
-            font-size: 1.8rem;
-        }
-        
-        .btn {
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-    }
-
-    /* Form Group Animation */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .mb-3 {
-        animation: fadeIn 0.5s ease-out forwards;
-        opacity: 0;
-        animation-delay: calc(var(--order) * 0.1s);
-    }
-</style>
-
-<script>
-    // Add animation delays
-    document.addEventListener('DOMContentLoaded', function() {
-        const formGroups = document.querySelectorAll('.mb-3');
-        formGroups.forEach((group, index) => {
-            group.style.setProperty('--order', index);
-        });
-        
-        // Add focus effects
-        const inputs = document.querySelectorAll('.form-control');
-        inputs.forEach(input => {
-            const parent = input.closest('.mb-3');
-            if (!parent) return;
-            
-            input.addEventListener('focus', () => {
-                parent.classList.add('focused');
-            });
-            
-            input.addEventListener('blur', () => {
-                if (!input.value) parent.classList.remove('focused');
-            });
-        });
-    });
-</script>
-<div class="container-fluid">
-    <h1 class="mb-4">Tambah Event Baru</h1>
-
-    <form action="{{ route('admin.event.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-        <div class="mb-3">
-            <label for="proker_id" class="form-label">Pilih Proker</label>
-            <select name="proker_id" id="proker_id" class="form-control" required>
-                <option value="">-- Pilih Proker --</option>
-                @foreach($prokers as $proker)
-                    <option value="{{ $proker->id }}">{{ $proker->subject }}</option>
-                @endforeach
-            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-2"></i>Simpan
+                        </button>
+                        <a href="{{ route('admin.event.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left mr-2"></i>Batal
+                        </a>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label for="proposal_id" class="form-label">Pilih Proposal (Opsional)</label>
-            <select name="proposal_id" id="proposal_id" class="form-control">
-                <option value="">-- Tanpa Proposal --</option>
-                @foreach($proposals as $proposal)
-                    <option value="{{ $proposal->id }}">{{ $proposal->title }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="name" class="form-label">Nama Event</label>
-            <input type="text" name="name" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="description" class="form-label">Deskripsi</label>
-            <textarea name="description" class="form-control" rows="3"></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label for="location" class="form-label">Lokasi</label>
-            <input type="text" name="location" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="start_date" class="form-label">Tanggal Mulai</label>
-            <input type="date" name="start_date" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="end_date" class="form-label">Tanggal Selesai</label>
-            <input type="date" name="end_date" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
-            <select name="status" class="form-control" required>
-                <option value="draft">Draft</option>
-                <option value="scheduled">Scheduled</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="banner" class="form-label">Upload Banner</label>
-            <input type="file" name="banner" class="form-control" accept="image/*" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="notes" class="form-label">Catatan Tambahan (Opsional)</label>
-            <textarea name="notes" class="form-control" rows="3"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-success">
-            <i class="fas fa-save"></i> Simpan Event
-        </button>
-        <a href="{{ route('admin.event.index') }}" class="btn btn-secondary">Batal</a>
-    </form>
+    </div>
 </div>
 @endsection

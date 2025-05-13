@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('bulan');
             $table->integer('tahun');
             $table->date('tanggal_bayar');
+            $table->unsignedBigInteger('created_by')->nullable(); // Foreign key ke local_users
+            $table->foreign('created_by')->references('id')->on('local_users')->onDelete('cascade');
             $table->timestamps();
             $table->unique(['nim', 'bulan', 'tahun'], 'payments_nim_bulan_tahun_unique');
         });

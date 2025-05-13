@@ -13,7 +13,9 @@ class CreateFinancialRecordsTable extends Migration
             $table->date('tanggal');
             $table->string('keterangan');
             $table->enum('jenis', ['Pemasukan', 'Pengeluaran']);
-            $table->decimal('jumlah', 15, 2); // bisa disesuaikan dengan kebutuhan
+            $table->decimal('jumlah', 15, 2); 
+            $table->unsignedBigInteger('created_by')->nullable(); 
+            $table->foreign('created_by')->references('id')->on('local_users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -23,5 +25,3 @@ class CreateFinancialRecordsTable extends Migration
         Schema::dropIfExists('financial_records');
     }
 }
-
-

@@ -14,7 +14,9 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\TentangController;
 use App\Http\Controllers\KeuanganController;
-use App\Models\Galeri;
+use App\Http\Controllers\StudentRegistrationController;
+use App\Http\Controllers\EventController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +39,7 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+
 // Rute yang memerlukan autentikasi
 Route::middleware('auth.custom')->group(function () {
     Route::get('/admin', fn() => view('admin.dashboard'));
@@ -51,7 +54,10 @@ Route::middleware('auth.custom')->group(function () {
     Route::get('/admin/keuangan/{id}/edit', [KeuanganController::class, 'edit'])->name('admin.keuangan.edit');
     Route::put('/admin/keuangan/{id}', [KeuanganController::class, 'update'])->name('admin.keuangan.update');
     Route::delete('/admin/keuangan/{id}', [KeuanganController::class, 'destroy'])->name('admin.keuangan.destroy');
-     
+    
+    Route::get('/events/{eventId}/register', [StudentRegistrationController::class, 'create'])->name('student.register.create');
+    Route::post('/student/register', [StudentRegistrationController::class, 'store'])->name('student.register.store');
+
 });
 
 // Rute khusus untuk admin
@@ -85,6 +91,13 @@ Route::middleware(['auth.admin'])->group(function () {
     Route::put('/update/{id}', [GaleriController::class, 'update'])->name('galeri.update');
     Route::delete('/tentang/{id}', [GaleriController::class, 'destroy'])->name('admin.galeri.destroy');
 
+    Route::get('/admin/event', [EventController::class, 'index'])->name('admin.event.index');
+    Route::get('admin//event/create', [EventController::class, 'create'])->name('admin.event.create');
+    Route::post('admin/event', [EventController::class, 'store'])->name('admin.event.store');
+    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('admin.event.edit');
+    Route::put('/events/{event}', [EventController::class, 'update'])->name('admin.event.update');
+    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('admin.event.destroy');
+
 
 
 
@@ -116,3 +129,24 @@ Route::get('/galeri', [GaleriController::class, 'galeri'])->name('galeri');
 
 
 
+Route::get('/events', [EventController::class, 'indexUser'])->name('events');
+Route::get('/events/{event}', [EventController::class, 'showUser'])->name('events.show');
+
+// Route untuk pendaftaran event
+
+// Route untuk admin melihat registrasi
+Route::get('/registrations', [StudentRegistrationController::class, 'index'])->name('registrations.index')->middleware('auth.admin');
+Route::get('/registrations/event/{eventId}', [StudentRegistrationController::class, 'showParticipants'])->name('registrations.showParticipants')->middleware('auth.admin');
+Route::patch('/registrations/update-attendance/{id}', [StudentRegistrationController::class, 'updateAttendance'])->name('registrations.updateAttendance')->middleware('auth.admin');
+
+// Jika ada route berikut, HAPUS agar tidak menimpa controller:
+// Route::get('/events', function () { return view('events'); })->name('events');
+Route::get('/register/{eventId}', [StudentRegistrationController::class, 'create'])->name('student.register.create');
+Route::post('/register/{eventId}', [StudentRegistrationController::class, 'store'])->name('event.register.store');
+Route::get('/registrations', [StudentRegistrationController::class, 'index'])->name('registrations.index');
+Route::get('/registrations/event/{eventId}', [StudentRegistrationController::class, 'showParticipants'])->name('registrations.showParticipants');
+Route::patch('/registrations/{id}/attendance', [StudentRegistrationController::class, 'updateAttendance'])->name('registrations.updateAttendance');
+
+// Tambahkan route untuk ekspor
+Route::get('/registrations/export/{eventId?}', [StudentRegistrationController::class, 'export'])->name('registrations.export');
+?>
