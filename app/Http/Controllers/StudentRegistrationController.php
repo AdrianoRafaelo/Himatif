@@ -11,234 +11,147 @@ use Illuminate\Support\Facades\Log;
 
 class StudentRegistrationController extends Controller
 {
-    /**
-     * Tampilkan halaman registrasi untuk event tertentu.
-     */
-public function create($eventId)
-{
-    if (!session('user') || session('user')['role'] !== 'mahasiswa') {
-        return redirect()->route('events')->with('error', 'Hanya mahasiswa yang sudah login yang dapat mendaftar.');
+    public function create($eventId)
+    {
+        if (!session('user') || session('user')['role'] !== 'mahasiswa') {
+            return redirect()->route('events')->with('error', 'Hanya mahasiswa yang sudah login yang dapat mendaftar.');
+        }
+
+        $event = Event::findOrFail($eventId);
+        return view('register', compact('event'));
     }
 
-    $event = Event::findOrFail($eventId);
-    return view('register', compact('event'));
-}
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'username' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+        ]);
 
-    /**
-     * Proses registrasi pengguna ke event.
-     */
-public function store(Request $request)
-{
-    // Validasi input dari formulir
-    $validated = $request->validate([
-        'event_id' => 'required|exists:events,id',
-        'username' => 'required|string|max:20',
-        'email' => 'required|email|max:255', // Tambahkan validasi untuk email jika diperlukan
-    ]);
+        $user = LocalUser::where('username', $validated['username'])->first() ?? $this->fetchAndStoreUserFromApi($validated['username']);
 
-    // Coba ambil user dari database lokal
-    $user = LocalUser::where('username', $validated['username'])->first();
-
-    // Jika tidak ditemukan di lokal, ambil dari API
-    if (!$user) {
-        $user = $this->fetchAndStoreUserFromApi($validated['username']);
         if (!$user) {
             return redirect()->back()->withErrors(['msg' => 'Gagal mengambil data pengguna. Silakan coba lagi atau periksa username.']);
         }
-    }
 
-    // Periksa apakah role pengguna adalah "mahasiswa"
-    if ($user->role !== 'mahasiswa') {
-        return redirect()->back()->withErrors(['msg' => 'Hanya mahasiswa yang dapat mendaftar untuk event ini.']);
-    }
+        if ($user->role !== 'mahasiswa') {
+            return redirect()->back()->withErrors(['msg' => 'Hanya mahasiswa yang dapat mendaftar untuk event ini.']);
+        }
 
-    // Validasi angkatan pengguna terhadap angkatan_akses event
-    $event = Event::findOrFail($validated['event_id']);
-    $angkatanAkses = $event->angkatan_akses;
-    $angkatanUser = $user->angkatan;
-
-    if ($angkatanAkses) {
-        if (strtolower($angkatanAkses) === 'semua') {
-            // Semua angkatan diizinkan
-        } else {
-            $allowedAngkatan = array_map('trim', explode(',', $angkatanAkses));
-            if (!$angkatanUser || !in_array($angkatanUser, $allowedAngkatan)) {
-                return redirect()->back()->withErrors(['msg' => 'Anda tidak termasuk angkatan yang diperbolehkan mendaftar untuk event ini. Angkatan yang diizinkan: ' . $angkatanAkses]);
+        $event = Event::findOrFail($validated['event_id']);
+        if ($event->angkatan_akses && strtolower($event->angkatan_akses) !== 'semua') {
+            $allowedAngkatan = array_map('trim', explode(',', $event->angkatan_akses));
+            if (!$user->angkatan || !in_array($user->angkatan, $allowedAngkatan)) {
+                return redirect()->back()->withErrors(['msg' => 'Anda tidak termasuk angkatan yang diperbolehkan mendaftar. Angkatan yang diizinkan: ' . $event->angkatan_akses]);
             }
         }
+
+        $registration = StudentRegistration::create([
+            'event_id' => $validated['event_id'],
+            'student_name' => $user->nama,
+            'username' => $validated['username'],
+            'nim' => $user->nim,
+            'angkatan' => $user->angkatan,
+            'prodi' => $user->prodi,
+            'attendance_status' => 'Belum Dikonfirmasi',
+        ]);
+
+        if (!$registration) {
+            return redirect()->back()->withErrors(['msg' => 'Gagal menyimpan registrasi.']);
+        }
+
+        return redirect()->route('events')->with('success', 'Pendaftaran berhasil!');
     }
 
-    // Simpan registrasi
-    $registration = StudentRegistration::create([
-        'event_id' => $validated['event_id'],
-        'student_name' => $user->nama ?? 'Nama Tidak Ditemukan',
-        'username' => $validated['username'],
-        'nim' => $user->nim ?? null,
-        'angkatan' => $user->angkatan ?? null,
-        'prodi' => $user->prodi ?? null,
-        'attendance_status' => 'Belum Dikonfirmasi', // Sesuai dengan enum
-    ]);
-
-    if (!$registration) {
-        return redirect()->back()->withErrors(['msg' => 'Gagal menyimpan registrasi.']);
-    }
-
-    return redirect()->route('events')->with('success', 'Pendaftaran berhasil!');
-}
-    /**
-     * Tampilkan daftar semua registrasi dikelompokkan berdasarkan event.
-     */
     public function index()
     {
         $registrations = StudentRegistration::all()->groupBy('event_id');
         $events = Event::all()->keyBy('id');
-        $participantsByEvent = [];
 
+        $participantsByEvent = [];
         foreach ($registrations as $eventId => $eventRegistrations) {
-            $participants = [];
-            foreach ($eventRegistrations as $registration) {
-                $participant = $this->prepareParticipantData($registration);
-                $participants[] = $participant;
-            }
-            $participantsByEvent[$eventId] = $participants;
+            $participantsByEvent[$eventId] = $eventRegistrations->map(fn($r) => $this->prepareParticipantData($r));
         }
 
         return view('admin.partisipan.index', compact('participantsByEvent', 'events'));
     }
 
-    /**
-     * Tampilkan daftar partisipan untuk event tertentu.
-     */
     public function showParticipants($eventId)
     {
         $event = Event::findOrFail($eventId);
         $registrations = StudentRegistration::where('event_id', $eventId)->get();
         $events = Event::all()->keyBy('id');
-        $participants = [];
 
-        foreach ($registrations as $registration) {
-            $participants[] = $this->prepareParticipantData($registration);
-        }
+        $participants = $registrations->map(fn($r) => $this->prepareParticipantData($r));
 
         return view('admin.partisipan.index', compact('event', 'participants', 'events'));
     }
 
-    /**
-     * Perbarui status kehadiran partisipan.
-     */
     public function updateAttendance(Request $request, $id)
     {
-        $registration = StudentRegistration::findOrFail($id);
-
         $request->validate([
             'attendance_status' => 'required|in:Hadir,Tidak Hadir,izin,Belum Dikonfirmasi',
         ]);
 
-        if ($registration->update(['attendance_status' => $request->attendance_status])) {
+        $registration = StudentRegistration::findOrFail($id);
+        $registration->attendance_status = $request->attendance_status;
+
+        if ($registration->save()) {
             return redirect()->back()->with('success', 'Status kehadiran berhasil diperbarui!');
         }
 
         return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui status kehadiran.']);
     }
 
-    
-    /**
-     * Ekspor data registrasi ke file CSV menggunakan PHP murni
-     */
     public function export($eventId = null)
     {
         try {
-            // Ambil data registrasi
-            $registrations = StudentRegistration::query();
-            if ($eventId) {
-                $registrations->where('event_id', $eventId);
-            }
-            $registrations = $registrations->get();
+            $query = StudentRegistration::query();
+            if ($eventId) $query->where('event_id', $eventId);
+            $registrations = $query->get();
 
-            // Set header untuk unduhan file CSV
-            $fileName = 'student_registrations_' . ($eventId ? 'event_' . $eventId : 'all') . '_' . date('Ymd_His') . '.csv';
+            $fileName = 'student_registrations_' . ($eventId ? 'event_' . $eventId : 'all') . '_' . now()->format('Ymd_His') . '.csv';
+
             header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="' . $fileName . '"');
-            header('Cache-Control: no-cache, no-store, must-revalidate');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-
-            // Buka output stream
+            header("Content-Disposition: attachment; filename=$fileName");
             $output = fopen('php://output', 'w');
+            fputcsv($output, ['ID', 'Event ID', 'Student Name', 'Username', 'NIM', 'Angkatan', 'Prodi', 'Attendance Status']);
 
-            // Tulis header kolom
-            fputcsv($output, [
-                'ID',
-                'Event ID',
-                'Student Name',
-                'Username',
-                'NIM',
-                'Angkatan',
-                'Prodi',
-                'Attendance Status',
-            ]);
-
-            // Tulis data
-            foreach ($registrations as $registration) {
-                fputcsv($output, [
-                    $registration->id,
-                    $registration->event_id,
-                    $registration->student_name,
-                    $registration->username,
-                    $registration->nim,
-                    $registration->angkatan,
-                    $registration->prodi,
-                    $registration->attendance_status,
-                ]);
+            foreach ($registrations as $r) {
+                fputcsv($output, [$r->id, $r->event_id, $r->student_name, $r->username, $r->nim, $r->angkatan, $r->prodi, $r->attendance_status]);
             }
 
-            // Tutup output stream
             fclose($output);
-            exit();
+            exit;
 
         } catch (\Exception $e) {
-            Log::error('Failed to export student registrations', [
-                'event_id' => $eventId,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            Log::error('Failed to export student registrations', ['error' => $e->getMessage()]);
             return redirect()->back()->withErrors(['msg' => 'Gagal mengekspor data: ' . $e->getMessage()]);
         }
     }
 
-
-    /**
-     * Ambil data pengguna dari API dan simpan ke local_users jika berhasil.
-     */
     private function fetchAndStoreUserFromApi($username)
     {
         try {
             $token = session('token');
-            if (!$token) {
-                return null;
-            }
+            if (!$token) return null;
 
-            $response = Http::withToken($token)->get(
-                'https://cis.del.ac.id/api/library-api/mahasiswa?username=' . $username . '&status=Aktif'
-            );
+            $response = Http::withToken($token)->get("https://cis.del.ac.id/api/library-api/mahasiswa?username=$username&status=Aktif");
 
             if ($response->successful()) {
-                $apiData = $response->json();
-                $mahasiswa = $apiData['data']['mahasiswa'][0] ?? null;
-
-                if ($mahasiswa) {
+                $data = $response->json()['data']['mahasiswa'][0] ?? null;
+                if ($data) {
                     return LocalUser::create([
                         'username' => $username,
-                        'nama' => $mahasiswa['nama'] ?? 'Nama Tidak Ditemukan',
-                        'nim' => $mahasiswa['nim'] ?? null,
-                        'angkatan' => $mahasiswa['angkatan'] ?? null,
-                        'prodi' => $mahasiswa['prodi_name'] ?? null,
+                        'nama' => $data['nama'] ?? 'Nama Tidak Ditemukan',
+                        'nim' => $data['nim'] ?? null,
+                        'angkatan' => $data['angkatan'] ?? null,
+                        'prodi' => $data['prodi_name'] ?? null,
                         'role' => 'mahasiswa',
                         'password' => bcrypt('default_password'),
                     ]);
                 }
-            } else {
-                Log::warning('API Request Failed', ['status' => $response->status(), 'body' => $response->body()]);
             }
         } catch (\Exception $e) {
             Log::error('API Exception', ['message' => $e->getMessage()]);
@@ -247,101 +160,63 @@ public function store(Request $request)
         return null;
     }
 
-    /**
-     * Siapkan data partisipan dengan fallback dari API atau local_users.
-     */
     private function prepareParticipantData($registration)
     {
         $participant = [
             'id' => $registration->id,
-            'username' => $registration->username ?? '-',
-            'nama' => $registration->student_name ?? '-',
-            'nim' => $registration->nim ?? '-',
-            'angkatan' => $registration->angkatan ?? '-',
-            'prodi' => $registration->prodi ?? '-',
-            'attendance_status' => $registration->attendance_status ?? 'Belum Dikonfirmasi',
+            'username' => $registration->username,
+            'nama' => $registration->student_name,
+            'nim' => $registration->nim,
+            'angkatan' => $registration->angkatan,
+            'prodi' => $registration->prodi,
+            'attendance_status' => $registration->attendance_status,
         ];
 
         try {
             $token = session('token');
             if ($token) {
-                $response = Http::withToken($token)->get(
-                    'https://cis.del.ac.id/api/library-api/mahasiswa?username=' . $registration->username . '&status=Aktif'
-                );
+                $response = Http::withToken($token)->get("https://cis.del.ac.id/api/library-api/mahasiswa?username={$registration->username}&status=Aktif");
 
                 if ($response->successful()) {
-                    $apiData = $response->json();
-                    $mahasiswa = $apiData['data']['mahasiswa'][0] ?? null;
+                    $mhs = $response->json()['data']['mahasiswa'][0] ?? null;
+                    if ($mhs) {
+                        $participant['nama'] = $mhs['nama'] ?? $registration->student_name;
+                        $participant['nim'] = $mhs['nim'] ?? $registration->nim;
+                        $participant['angkatan'] = $mhs['angkatan'] ?? $registration->angkatan;
+                        $participant['prodi'] = $mhs['prodi_name'] ?? $registration->prodi;
 
-                    if ($mahasiswa) {
-                        $participant['nama'] = $mahasiswa['nama'] ?? $registration->student_name;
-                        $participant['nim'] = $mahasiswa['nim'] ?? '-';
-                        $participant['angkatan'] = $mahasiswa['angkatan'] ?? '-';
-                        $participant['prodi'] = $mahasiswa['prodi_name'] ?? '-';
-
-                        // Update local_users tanpa mengubah password atau remember_token
-                        LocalUser::updateOrCreate(
-                            ['username' => $registration->username],
-                            [
-                                'nama' => $mahasiswa['nama'] ?? $registration->student_name,
-                                'nim' => $mahasiswa['nim'] ?? null,
-                                'angkatan' => $mahasiswa['angkatan'] ?? null,
-                                'prodi' => $mahasiswa['prodi_name'] ?? null,
-                                'role' => LocalUser::where('username', $registration->username)->value('role') ?? 'mahasiswa',
-                            ]
-                        );
-
-                        // Update student_registrations dengan data terbaru dari API
-                        $registration->update([
-                            'student_name' => $mahasiswa['nama'] ?? $registration->student_name,
-                            'nim' => $mahasiswa['nim'] ?? $registration->nim,
-                            'angkatan' => $mahasiswa['angkatan'] ?? $registration->angkatan,
-                            'prodi' => $mahasiswa['prodi_name'] ?? $registration->prodi,
+                        LocalUser::updateOrCreate([
+                            'username' => $registration->username
+                        ], [
+                            'nama' => $mhs['nama'] ?? $registration->student_name,
+                            'nim' => $mhs['nim'] ?? $registration->nim,
+                            'angkatan' => $mhs['angkatan'] ?? $registration->angkatan,
+                            'prodi' => $mhs['prodi_name'] ?? $registration->prodi,
+                            'role' => LocalUser::where('username', $registration->username)->value('role') ?? 'mahasiswa'
                         ]);
+
+                        $registration->update($participant);
                     }
-                } else {
-                    $this->fallbackToLocalUser($registration, $participant);
                 }
-            } else {
-                $this->fallbackToLocalUser($registration, $participant);
             }
         } catch (\Exception $e) {
+            Log::error('Participant Data Fallback', ['message' => $e->getMessage()]);
             $this->fallbackToLocalUser($registration, $participant);
-            Log::error('Exception in API Call', ['message' => $e->getMessage()]);
         }
 
         return $participant;
     }
 
-    /**
-     * Gunakan data dari local_users sebagai fallback.
-     */
     private function fallbackToLocalUser($registration, &$participant)
     {
-        $localUser = LocalUser::where('username', $registration->username)->first();
-        if ($localUser) {
-            $participant['nama'] = $localUser->nama ?? $registration->student_name;
-            $participant['nim'] = $localUser->nim ?? '-';
-            $participant['angkatan'] = $localUser->angkatan ?? '-';
-            $participant['prodi'] = $localUser->prodi ?? '-';
+        $local = LocalUser::where('username', $registration->username)->first();
+        if ($local) {
+            $participant['nama'] = $local->nama ?? $registration->student_name;
+            $participant['nim'] = $local->nim ?? $registration->nim;
+            $participant['angkatan'] = $local->angkatan ?? $registration->angkatan;
+            $participant['prodi'] = $local->prodi ?? $registration->prodi;
 
-            // Update student_registrations dengan data dari LocalUser
-            $registration->update([
-                'student_name' => $localUser->nama ?? $registration->student_name,
-                'nim' => $localUser->nim ?? $registration->nim,
-                'angkatan' => $localUser->angkatan ?? $registration->angkatan,
-                'prodi' => $localUser->prodi ?? $registration->prodi,
-            ]);
-        } else {
-            $participant['nama'] = '(Gagal ambil dari API)';
+            $registration->update($participant);
         }
-    }
-
-    /**
-     * Buat email fallback berdasarkan username.
-     */
-    private function generateFallbackEmail($username)
-    {
-        return "{$username}@example.com";
     }
 }

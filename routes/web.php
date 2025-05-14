@@ -16,6 +16,7 @@ use App\Http\Controllers\TentangController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\DashboardController;
 
 
 /*
@@ -42,7 +43,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rute yang memerlukan autentikasi
 Route::middleware('auth.custom')->group(function () {
-    Route::get('/admin', fn() => view('admin.dashboard'));
+    Route::get('/admin/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('admin.dashboard'); 
     Route::get('/admin/keuangan', fn() => view('admin.keuangan'));
     Route::get('/admin/kas/{angkatan?}', [AdminMahasiswaController::class, 'index'])->name('admin.kas.index');
     Route::post('/admin/kas', [AdminMahasiswaController::class, 'store'])->name('admin.kas.store');

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LocalUser extends Model
 {
+    use HasFactory; // Untuk factory dan seeding
+
     protected $table = 'local_users';
 
     protected $fillable = [
@@ -21,6 +24,15 @@ class LocalUser extends Model
         'password',
     ];
 
-    
-    
+    // Opsional: Jika Anda ingin relasi terbalik dengan news
+    public function news()
+    {
+        return $this->hasMany(News::class, 'created_by');
+    }
+
+    // Opsional: Jika Anda ingin autentikasi kustom
+    public function getAuthIdentifierName()
+    {
+        return 'username'; // Gunakan username sebagai identifier
+    }
 }

@@ -1,9 +1,44 @@
+<style>
+    .gradient-primary {
+        background: linear-gradient(135deg, #007bff 0%, #00c6ff 100%);
+        transition: all 0.3s ease;
+    }
+    .gradient-success {
+        background: linear-gradient(135deg, #28a745 0%, #34d058 100%);
+        transition: all 0.3s ease;
+    }
+    .gradient-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #1fc8db 100%);
+        transition: all 0.3s ease;
+    }
+    .gradient-warning {
+        background: linear-gradient(135deg, #ffca2c 0%, #f7e200 100%);
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .fade-in {
+        animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+    .news-thumbnail {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+</style>
+
 @extends('admin.layouts')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard HIMA IF')
 
 @section('content')
-
     <!-- Notifikasi sukses -->
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show mx-4 mt-4" role="alert">
@@ -14,130 +49,265 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4 px-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
-        </a>
+        <h1 class="h3 mb-0 text-gray-800">Dashboard HIMATIF</h1>
     </div>
 
     <!-- Cards -->
-    <div class="row px-4">
-        <!-- Monthly Earnings -->
+    <div class="row px-4 fade-in">
+        <!-- Total Events -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
+            <a href="{{ route('admin.event.index') }}" class="text-decoration-none">
+                <div class="card gradient-primary text-white shadow h-100 py-2">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-calendar fa-2x"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Events</div>
+                            <div class="h5 mb-0 font-weight-bold">{{ \App\Models\Event::count() }}</div>
+                            <small class="text-light">Terakhir diperbarui: {{ now()->format('d M Y') }}</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+<!-- Approved Proposals -->
+<div class="col-xl-3 col-md-6 mb-4">
+    @if(session('user')['role'] === 'kaprodi')
+        <div class="card gradient-success text-white shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-check-circle fa-2x"></i>
+                </div>
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1">Approved Proposals</div>
+                    <div class="h5 mb-0 font-weight-bold">{{ \App\Models\Proposal::where('status', 'approved')->count() }}</div>
+                    <small class="text-light">Terakhir diperbarui: {{ now()->format('d M Y') }}</small>
+                </div>
+            </div>
+        </div>
+    @else
+        <a href="{{ route('admin.proposals.index') }}" class="text-decoration-none">
+            <div class="card gradient-success text-white shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center">
                     <div class="me-3">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        <i class="fas fa-check-circle fa-2x"></i>
                     </div>
                     <div>
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Earnings (Monthly)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">Approved Proposals</div>
+                        <div class="h5 mb-0 font-weight-bold">{{ \App\Models\Proposal::where('status', 'approved')->count() }}</div>
+                        <small class="text-light">Terakhir diperbarui: {{ now()->format('d M Y') }}</small>
+                    </div>
+                </div>
+            </div>
+        </a>
+    @endif
+</div>
+
+<!-- Pending Proposals -->
+<div class="col-xl-3 col-md-6 mb-4">
+    @if(session('user')['role'] === 'kaprodi')
+        <div class="card gradient-info text-white shadow h-100 py-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="fas fa-hourglass-half fa-2x"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">Pending Proposals</div>
+                        <div class="d-flex align-items-center">
+                            <div class="h5 mb-0 me-3 font-weight-bold">{{ \App\Models\Proposal::where('status', 'pending')->count() }}</div>
+                            <div class="progress progress-sm w-100">
+                                <div class="progress-bar bg-light" role="progressbar" style="width: {{ (\App\Models\Proposal::count() > 0 ? (\App\Models\Proposal::where('status', 'pending')->count() / \App\Models\Proposal::count() * 100) : 0) }}%"
+                                    aria-valuenow="{{ \App\Models\Proposal::where('status', 'pending')->count() }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="{{ \App\Models\Proposal::count() }}"></div>
+                            </div>
+                        </div>
+                        <small class="text-light">Dari total {{ \App\Models\Proposal::count() }} proposal</small>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Annual Earnings -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body d-flex align-items-center">
-                    <div class="me-3">
-                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings (Annual)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Tasks -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+    @else
+        <a href="{{ route('admin.proposals.index') }}" class="text-decoration-none">
+            <div class="card gradient-info text-white shadow h-100 py-2">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="me-3">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            <i class="fas fa-hourglass-half fa-2x"></i>
                         </div>
                         <div>
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Pending Proposals</div>
                             <div class="d-flex align-items-center">
-                                <div class="h5 mb-0 me-3 font-weight-bold text-gray-800">50%</div>
+                                <div class="h5 mb-0 me-3 font-weight-bold">{{ \App\Models\Proposal::where('status', 'pending')->count() }}</div>
                                 <div class="progress progress-sm w-100">
-                                    <div class="progress-bar bg-info" role="progressbar" style="width: 50%"
-                                        aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar bg-light" role="progressbar" style="width: {{ (\App\Models\Proposal::count() > 0 ? (\App\Models\Proposal::where('status', 'pending')->count() / \App\Models\Proposal::count() * 100) : 0) }}%"
+                                        aria-valuenow="{{ \App\Models\Proposal::where('status', 'pending')->count() }}"
+                                        aria-valuemin="0"
+                                        aria-valuemax="{{ \App\Models\Proposal::count() }}"></div>
                                 </div>
+                            </div>
+                            <small class="text-light">Dari total {{ \App\Models\Proposal::count() }} proposal</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    @endif
+</div>        <!-- Total Program Kerja (untuk kaprodi) / News Articles (untuk lainnya) -->
+        @if(session('user')['role'] !== 'kaprodi')
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a href="{{ route('admin.news.index') }}" class="text-decoration-none">
+                    <div class="card gradient-warning text-white shadow h-100 py-2">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-newspaper fa-2x"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-weight-bold text-uppercase mb-1">News Articles</div>
+                                <div class="h5 mb-0 font-weight-bold">{{ \App\Models\News::count() }}</div>
+                                <small class="text-light">Terakhir diperbarui: {{ now()->format('d M Y') }}</small>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-        </div>
-        <!-- Pending Requests -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body d-flex align-items-center">
-                    <div class="me-3">
-                        <i class="fas fa-comments fa-2x text-gray-300"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Requests</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Charts -->
-    <div class="row px-4">
-        <!-- Area Chart -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                    <div class="dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
+        @else
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a href="{{ route('proker.index') }}" class="text-decoration-none">
+                    <div class="card gradient-warning text-white shadow h-100 py-2">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-tasks fa-2x"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-weight-bold text-uppercase mb-1">Total Program Kerja</div>
+                                <div class="h5 mb-0 font-weight-bold">{{ \App\Models\Proker::count() }}</div>
+                                <small class="text-light">Terakhir diperbarui: {{ now()->format('d M Y') }}</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="myAreaChart"></canvas>
-                    </div>
-                </div>
+                </a>
             </div>
-        </div>
+        @endif
+    </div>
 
-        <!-- Pie Chart -->
+    <!-- Content Section -->
+    <div class="row px-4 fade-in">
+        <!-- Events Overview -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                    <div class="dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </div>
+                    <h6 class="m-0 font-weight-bold text-primary">Events Overview</h6>
+                    <a href="{{ route('admin.event.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
                 </div>
                 <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="myPieChart"></canvas>
-                    </div>
+                    @if($events->isEmpty())
+                        <p class="text-muted">Belum ada event yang tersedia.</p>
+                    @else
+                        <ul class="list-group list-group-flush">
+                            @foreach($events as $event)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ $event->name }}</strong><br>
+                                        <small>{{ $event->start_date->format('d M Y') }} - {{ $event->location }}</small>
+                                    </div>
+                                    <span class="badge bg-{{ $event->status == 'completed' ? 'success' : ($event->status == 'scheduled' ? 'primary' : 'warning') }}">
+                                        {{ ucfirst($event->status) }}
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
             </div>
         </div>
+
+        <!-- Approved Proposals -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Approved Proposals</h6>
+                    <a href="{{ route('admin.kaprodi.proposals.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
+                </div>
+                <div class="card-body">
+                    @if($approvedProposals->isEmpty())
+                        <p class="text-muted">Belum ada proposal yang disetujui.</p>
+                    @else
+                        <ul class="list-group list-group-flush">
+                            @foreach($approvedProposals as $proposal)
+                                <li class="list-group-item">
+                                    <strong>{{ $proposal->title }}</strong><br>
+                                    <small>Proker: {{ $proposal->proker->name ?? 'N/A' }}</small><br>
+                                    <small>Disetujui pada: {{ $proposal->reviewed_at->format('d M Y') }}</small>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Program Kerja Terbaru (untuk kaprodi) / News Updates (untuk lainnya) -->
+        @if(session('user')['role'] !== 'kaprodi')
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">News Updates</h6>
+                        <a href="{{ route('admin.news.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
+                    </div>
+                    <div class="card-body">
+                        @if($news->isEmpty())
+                            <p class="text-muted">Belum ada berita yang tersedia.</p>
+                        @else
+                            <ul class="list-group list-group-flush">
+                                @foreach($news as $article)
+                                    <li class="list-group-item d-flex align-items-center">
+                                        @if($article->image)
+                                            <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="news-thumbnail me-3">
+                                        @else
+                                            <i class="fas fa-newspaper fa-2x me-3 text-muted"></i>
+                                        @endif
+                                        <div>
+                                            <strong>{{ Str::limit($article->title, 30) }}</strong><br>
+                                            <small>{{ Str::limit($article->content, 50) }}</small>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Program Kerja Terbaru</h6>
+                        <a href="{{ route('proker.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
+                    </div>
+                    <div class="card-body">
+                        @if($prokers->isEmpty())
+                            <p class="text-muted">Belum ada program kerja yang tersedia.</p>
+                        @else
+                            <ul class="list-group list-group-flush">
+                                @foreach($prokers as $proker)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ Str::limit($proker->subject, 30) }}</strong><br>
+                                            <small>Periode: {{ $proker->period }}</small>
+                                        </div>
+                                        <span class="badge bg-{{ $proker->status == 'Selesai' ? 'success' : ($proker->status == 'Pelaksanaan' ? 'primary' : 'warning') }}">
+                                            {{ $proker->status }}
+                                        </span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 @endsection

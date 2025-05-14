@@ -191,9 +191,9 @@
                 <td class="border px-4 py-2">{{ $proposal->proker->subject ?? '-' }}</td>
                 <td class="border px-4 py-2">{{ $proposal->title }}</td>
                 <td class="border px-4 py-2">{{ Str::limit($proposal->description, 50) }}</td>
-                <td class="border px-4 py-2">
-                    <a href="{{ asset('storage/' . $proposal->file) }}" target="_blank" class="text-blue-600 underline">Lihat File</a>
-                </td>
+                    <td class="border px-3 py-2">
+                        <a href="{{ asset('storage/' . $proposal->file_path) }}" class="text-blue-500 underline" target="_blank">Lihat File</a>
+                    </td>
                 <td class="border px-4 py-2">
                 @if($proposal->status === 'approved')
                     <span class="text-green-600 font-semibold">Disetujui</span>

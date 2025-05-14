@@ -111,11 +111,11 @@ class AuthController extends Controller
     {
         switch ($role) {
             case 'admin':
-                return redirect('/admin')->with('success', 'Login berhasil!');
+                return redirect('/admin/dashboard')->with('success', 'Login berhasil!');
             case 'kaprodi':
-                return redirect('/admin')->with('success', 'Login berhasil!');
+                return redirect('/admin/dashboard')->with('success', 'Login berhasil!');
             case 'bendahara':
-                return redirect('/admin')->with('success', 'Login berhasil!');
+                return redirect('/admin/dashboard')->with('success', 'Login berhasil!');
             case 'mahasiswa':
             default:
                 return redirect('/student')->with('success', 'Login berhasil!');
