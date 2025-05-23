@@ -193,7 +193,7 @@
                 <ul class="navbar-nav mx-auto py-2">
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('home') }}">Beranda</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('events') }}">Acara</a></li>
-                    <li class="nav-item mx-2"><a class="nav-link" href="{{ route('galeri') }}">Galery</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link" href="{{ route('galeri') }}">Galeri</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('keuangan') }}">Keuangan</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('news') }}">Berita</a></li>
                     <li class="nav-item mx-2"><a class="nav-link" href="{{ route('tentang') }}">Visi Misi</a></li>
@@ -270,6 +270,55 @@
             @yield('content')
         </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Contact Information -->
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">HIMATIF</h5>
+                    <p class="text-secondary">
+                        Himpunan Mahasiswa Teknologi Informasi<br>
+                        Institut Teknologi DEL<br>
+                        Sitoluama, Laguboti, Toba Samosir, Sumatera Utara
+                    </p>
+                    <p class="text-secondary">
+                        <i class="far fa-envelope me-2"></i>himatif@example.com<br>
+                        <i class="fas fa-phone me-2"></i>+62 123 456 7890
+                    </p>
+                </div>
+                <!-- Quick Links -->
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">Tautan Cepat</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ route('home') }}" class="text-secondary text-decoration-none">Beranda</a></li>
+                        <li><a href="{{ route('events') }}" class="text-secondary text-decoration-none">Acara</a></li>
+                        <li><a href="{{ route('galeri') }}" class="text-secondary text-decoration-none">Galeri</a></li>
+                        <li><a href="{{ route('keuangan') }}" class="text-secondary text-decoration-none">Keuangan</a></li>
+                        <li><a href="{{ route('news') }}" class="text-secondary text-decoration-none">Berita</a></li>
+                        <li><a href="{{ route('tentang') }}" class="text-secondary text-decoration-none">Visi Misi</a></li>
+                        <li><a href="{{ route('organization') }}" class="text-secondary text-decoration-none">Organisasi</a></li>
+                    </ul>
+                </div>
+                <!-- Social Media -->
+                <div class="col-md-4">
+                    <h5 class="mb-3">Ikuti Kami</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-secondary" aria-label="Instagram"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="#" class="text-secondary" aria-label="Twitter"><i class="fab fa-twitter fa-2x"></i></a>
+                        <a href="#" class="text-secondary" aria-label="YouTube"><i class="fab fa-youtube fa-2x"></i></a>
+                        <a href="#" class="text-secondary" aria-label="Facebook"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#" class="text-secondary" aria-label="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-secondary my-4">
+            <div class="text-center">
+                <p class="text-secondary mb-0">© {{ date('Y') }} HIMATIF. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

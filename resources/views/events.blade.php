@@ -76,9 +76,18 @@
                         <span class="{{ $statusColor }} fw-bold text-capitalize">{{ $event->status }}</span>
 
                         @if(session('user') && session('user')['role'] === 'mahasiswa')
-                        <a href="{{ route('student.register.create', $event->id) }}" class="btn btn-sm btn-outline-primary">
-                            Daftar <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
+                            @php
+                                $isRegistered = \App\Models\StudentRegistration::where('event_id', $event->id)
+                                    ->where('username', session('user')['username'])
+                                    ->exists();
+                            @endphp
+                            @if($isRegistered)
+                                <span class="btn btn-sm btn-outline-secondary disabled">Sudah Terdaftar</span>
+                            @else
+                                <a href="{{ route('student.register.create', $event->id) }}" class="btn btn-sm btn-outline-primary">
+                                    Daftar <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            @endif
                         @endif
                     </div>
                 </div>

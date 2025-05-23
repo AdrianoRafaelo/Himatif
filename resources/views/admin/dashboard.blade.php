@@ -36,7 +36,7 @@
 
 @extends('admin.layouts')
 
-@section('title', 'Dashboard HIMA IF')
+@section('title', 'Dashboard HIMATIF')
 
 @section('content')
     <!-- Notifikasi sukses -->

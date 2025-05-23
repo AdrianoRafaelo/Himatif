@@ -19,6 +19,12 @@ class Proposal extends Model
         'reviewed_at',
     ];
 
+    // Tambahkan casting untuk kolom tanggal
+    protected $casts = [
+        'sent_at' => 'datetime',
+        'reviewed_at' => 'datetime',
+    ];
+
     public function proker()
     {
         return $this->belongsTo(Proker::class);

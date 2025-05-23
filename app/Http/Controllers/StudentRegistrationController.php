@@ -22,47 +22,58 @@ class StudentRegistrationController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'event_id' => 'required|exists:events,id',
-            'username' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-        ]);
+{
+    $validated = $request->validate([
+        'event_id' => 'required|exists:events,id',
+        'username' => 'required|string|max:20',
+        'email' => 'required|email|max:255',
+    ]);
 
-        $user = LocalUser::where('username', $validated['username'])->first() ?? $this->fetchAndStoreUserFromApi($validated['username']);
+    $user = LocalUser::where('username', $validated['username'])->first() ?? $this->fetchAndStoreUserFromApi($validated['username']);
 
-        if (!$user) {
-            return redirect()->back()->withErrors(['msg' => 'Gagal mengambil data pengguna. Silakan coba lagi atau periksa username.']);
-        }
-
-        if ($user->role !== 'mahasiswa') {
-            return redirect()->back()->withErrors(['msg' => 'Hanya mahasiswa yang dapat mendaftar untuk event ini.']);
-        }
-
-        $event = Event::findOrFail($validated['event_id']);
-        if ($event->angkatan_akses && strtolower($event->angkatan_akses) !== 'semua') {
-            $allowedAngkatan = array_map('trim', explode(',', $event->angkatan_akses));
-            if (!$user->angkatan || !in_array($user->angkatan, $allowedAngkatan)) {
-                return redirect()->back()->withErrors(['msg' => 'Anda tidak termasuk angkatan yang diperbolehkan mendaftar. Angkatan yang diizinkan: ' . $event->angkatan_akses]);
-            }
-        }
-
-        $registration = StudentRegistration::create([
-            'event_id' => $validated['event_id'],
-            'student_name' => $user->nama,
-            'username' => $validated['username'],
-            'nim' => $user->nim,
-            'angkatan' => $user->angkatan,
-            'prodi' => $user->prodi,
-            'attendance_status' => 'Belum Dikonfirmasi',
-        ]);
-
-        if (!$registration) {
-            return redirect()->back()->withErrors(['msg' => 'Gagal menyimpan registrasi.']);
-        }
-
-        return redirect()->route('events')->with('success', 'Pendaftaran berhasil!');
+    if (!$user) {
+        return redirect()->back()->withErrors(['msg' => 'Gagal mengambil data pengguna. Silakan coba lagi atau periksa username.']);
     }
+
+    if ($user->role !== 'mahasiswa') {
+        return redirect()->back()->withErrors(['msg' => 'Hanya mahasiswa yang dapat mendaftar untuk event ini.']);
+    }
+
+    $event = Event::findOrFail($validated['event_id']);
+
+    // Periksa pendaftaran ganda
+    $existingRegistration = StudentRegistration::where('event_id', $validated['event_id'])
+        ->where('username', $validated['username'])
+        ->first();
+
+    if ($existingRegistration) {
+        return redirect()->back()->withErrors(['msg' => 'Anda sudah terdaftar untuk event ini.']);
+    }
+
+    if ($event->angkatan_akses && strtolower($event->angkatan_akses) !== 'semua') {
+        $allowedAngkatan = array_map('trim', explode(',', $event->angkatan_akses));
+        if (!$user->angkatan || !in_array($user->angkatan, $allowedAngkatan)) {
+            return redirect()->back()->withErrors(['msg' => 'Anda tidak termasuk angkatan yang diperbolehkan mendaftar. Angkatan yang diizinkan: ' . $event->angkatan_akses]);
+        }
+    }
+
+    $registration = StudentRegistration::create([
+        'event_id' => $validated['event_id'],
+        'student_name' => $user->nama,
+        'username' => $validated['username'],
+        'nim' => $user->nim,
+        'angkatan' => $user->angkatan,
+        'prodi' => $user->prodi,
+        'attendance_status' => 'Belum Dikonfirmasi',
+    ]);
+
+    if (!$registration) {
+        return redirect()->back()->withErrors(['msg' => 'Gagal menyimpan registrasi.']);
+    }
+
+    return redirect()->route('events')->with('success', 'Pendaftaran berhasil!');
+}
+
 
     public function index()
     {

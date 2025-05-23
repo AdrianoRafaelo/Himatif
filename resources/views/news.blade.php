@@ -33,11 +33,6 @@
             <p class="text-center">Belum ada berita.</p>
             @endforelse
         </div>
-        
-        
-        <div class="text-center mt-5">
-            <a href="#" class="btn btn-outline">Lihat Semua Berita <i class="fas fa-arrow-right btn-icon"></i></a>
-        </div>
     </div>
 </section>
 @endsection

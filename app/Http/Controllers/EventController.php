@@ -25,7 +25,7 @@ class EventController extends Controller
     public function create()
     {
         $prokers = Proker::all();
-        $proposals = Proposal::all();
+        $proposals = Proposal::where('status', 'approved')->get();
         return view('admin.event.create', compact('prokers', 'proposals'));
     }
 
@@ -58,7 +58,12 @@ class EventController extends Controller
     public function edit(Event $event)
     {
         $prokers = Proker::all();
-        $proposals = Proposal::all();
+        // Ambil proposal yang disetujui, dan jika event memiliki proposal_id, sertakan proposal tersebut
+        $proposals = Proposal::where('status', 'approved')
+            ->when($event->proposal_id, function ($query) use ($event) {
+                return $query->orWhere('id', $event->proposal_id);
+            })
+            ->get();
         return view('admin.event.edit', compact('event', 'prokers', 'proposals'));
     }
 
