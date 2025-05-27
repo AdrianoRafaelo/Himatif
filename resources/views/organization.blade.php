@@ -260,7 +260,7 @@
     <!-- Struktur BPH -->
     <div class="mb-5">
         <h2 class="section-header">Struktur BPH Periode {{ $period }}</h2>
-        <p class="text-muted mb-4">Struktur kepengurusan Himpunan Mahasiswa Informatika untuk periode ini.</p>
+        <p class="text-muted mb-4">Struktur kepengurusan Himpunan Mahasiswa untuk periode ini.</p>
         @if($bphs->isEmpty())
             <div class="empty-state">
                 <i class="fas fa-users-slash"></i>
@@ -307,7 +307,7 @@
         <table class="table table-bordered align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>Perihal</th>
+                    <th>Judul</th>
                     <th>Tujuan</th>
                     <th>Lokasi</th>
                     <th>Rencana Tanggal</th>
@@ -350,7 +350,7 @@
         <table class="table table-bordered align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>Perihal</th>
+                    <th>Judul</th>
                     <th>Rencana Tanggal</th>
                     <th>Realisasi Tanggal</th>
                     <th>Status</th>

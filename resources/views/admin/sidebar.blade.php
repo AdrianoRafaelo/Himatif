@@ -163,7 +163,7 @@
         @endif
 
         <!-- Laporan Keuangan (Admin and Bendahara) -->
-        @if(session('user')['role'] === 'admin' || session('user')['role'] === 'bendahara')
+        @if(session('user')['role'] === 'bendahara')
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.keuangan.index') }}">
                     <i class="fas fa-fw fa-file-invoice-dollar"></i>
@@ -228,6 +228,24 @@
                 </div>
             </div>
         </li>
+
+            <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProposal"
+            aria-expanded="true" aria-controls="collapseProposal">
+            <i class="fas fa-fw fa-file-alt"></i>
+            <span>Proposal</span>
+        </a>
+        <div id="collapseProposal" class="collapse" aria-labelledby="headingProposal" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded shadow-sm">
+                <a class="collapse-item" href="{{ route('admin.proposals.index') }}">
+                    <i class="fas fa-eye fa-sm mr-2 text-primary"></i>Lihat Proposal
+                </a>
+                <a class="collapse-item" href="{{ route('admin.proposals.create') }}">
+                    <i class="fas fa-plus-circle fa-sm mr-2 text-primary"></i>Tambah Proposal
+                </a>
+            </div>
+        </div>
+    </li>
 
         <!-- Galeri -->
         <li class="nav-item">
