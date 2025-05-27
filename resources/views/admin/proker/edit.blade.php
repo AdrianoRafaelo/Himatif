@@ -36,8 +36,11 @@
         @if(session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
-        <form action="{{ route('proker.update', $proker->id) }}" method="POST">
+        <form action="{{ route('proker.update', $proker->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -75,7 +78,7 @@
                             <label for="objective">Tujuan</label>
                             <i class="fas fa-bullseye input-icon"></i>
                         </div>
-                        <input type="text" class="form-control" id="objective" name="objective" value="{{ old('objective', $proker->objective) }}" placeholder="Tujuan proker">
+                        <textarea class="form-control" id="objective" name="objective" rows="3" placeholder="Tujuan proker">{{ old('objective', $proker->objective) }}</textarea>
                         @error('objective')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
@@ -189,11 +192,16 @@
                             <option value="Perencanaan" {{ old('status', $proker->status) == 'Perencanaan' ? 'selected' : '' }}>Perencanaan</option>
                             <option value="Persiapan" {{ old('status', $proker->status) == 'Persiapan' ? 'selected' : '' }}>Persiapan</option>
                             <option value="Pelaksanaan" {{ old('status', $proker->status) == 'Pelaksanaan' ? 'selected' : '' }}>Pelaksanaan</option>
-                            <option value="Selesai" {{ old('status', $proker->status) == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                             @if(auth()->user() && auth()->user()->role == 'kaprodi')
+                            <option value="Selesai" {{ old('status', $proker->status) == 'Selesai' ? 'selected' : '' }} {{ $proker->approval_status == 'approved' ? 'disabled' : '' }}>Selesai</option>
+                            @endif
                         </select>
                         @error('status')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
+                        @if($proker->approval_status == 'approved')
+                            <small class="form-text text-muted">Status tidak dapat diubah karena berita acara telah disetujui.</small>
+                        @endif
                     </div>
                 </div>
                 
@@ -219,6 +227,30 @@
                 </div>
             </div>
             
+            <!-- Tambahkan field upload berita acara -->
+            @if($proker->status == 'Pelaksanaan' || $proker->status == 'Selesai')
+            <div class="form-group mb-3">
+                <div class="input-icon-container">
+                    <label for="report_file">Berita Acara</label>
+                    <i class="fas fa-file-upload input-icon"></i>
+                </div>
+                <input type="file" class="form-control" id="report_file" name="report_file" accept=".pdf" {{ $proker->approval_status == 'approved' || $proker->approval_status == 'rejected' ? 'disabled' : '' }}>
+                @if($proker->report_file)
+                    <small class="form-text">File saat ini: <a href="{{ Storage::url($proker->report_file) }}" target="_blank">Lihat Berita Acara</a></small>
+                @endif
+                <small class="form-text">Unggah berita acara dalam format PDF (maks. 5MB).</small>
+                @error('report_file')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            @if($proker->approval_status)
+                <div class="form-group mb-3">
+                    <label>Status Persetujuan</label>
+                    <p>{{ ucfirst($proker->approval_status) }}</p>
+                </div>
+            @endif
+            @endif
+
             <div class="form-buttons">
                 <a href="{{ route('proker.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i> Batal
@@ -286,6 +318,30 @@
             element.addEventListener('blur', function () {
                 this.parentElement.classList.remove('input-focused');
             });
+        });
+
+        // Validasi wajib isi realisasi anggaran & tanggal jika upload berita acara
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const reportFile = document.getElementById('report_file');
+            const actualBudget = document.getElementById('actual_budget');
+            const actualDate = document.getElementById('actual_date');
+
+            // Cek jika upload berita acara atau sudah ada file berita acara
+            if ((reportFile && reportFile.value) || "{{ $proker->report_file }}") {
+                if (!actualBudget.value || actualBudget.value <= 0) {
+                    alert('Realisasi Anggaran wajib diisi dan lebih dari 0 jika mengupload berita acara!');
+                    actualBudget.focus();
+                    e.preventDefault();
+                    return false;
+                }
+                if (!actualDate.value) {
+                    alert('Realisasi Tanggal wajib diisi jika mengupload berita acara!');
+                    actualDate.focus();
+                    e.preventDefault();
+                    return false;
+                }
+            }
         });
     });
 </script>

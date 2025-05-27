@@ -3,9 +3,35 @@
 @section('title', 'Keuangan')
 
 @section('content')
-
 <div class="container">
     <h4 class="mb-4">Transparansi Keuangan</h4>
+
+    <!-- Form Filter Bulan dan Tahun -->
+    <form method="GET" action="{{ route('admin.keuangan.index') }}" class="mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <select name="bulan" class="form-control">
+                    <option value="">Semua Bulan</option>
+                    @for($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>
+                            {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="tahun" class="form-control">
+                    <option value="">Semua Tahun</option>
+                    @for($i = date('Y') - 2; $i <= date('Y') + 0; $i++)
+                        <option value="{{ $i }}" {{ $tahun == $i ? 'selected' : '' }}>{{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
 
     <a href="{{ route('admin.keuangan.create') }}" class="btn btn-primary mb-4">+ Tambah Data</a>
 
@@ -31,16 +57,13 @@
                         @php $totalPemasukan = 0; @endphp
                         @foreach($records->where('jenis', 'Pemasukan') as $record)
                             <tr>
-                                <td>{{ $record->tanggal }}</td>
+                                <td>{{ \Carbon\Carbon::parse($record->tanggal)->translatedFormat('d F Y') }}</td>
                                 <td>{{ $record->keterangan }}</td>
                                 <td>Rp {{ number_format($record->jumlah, 0, ',', '.') }}</td>
                                 <td class="d-flex">
-                                    <!-- Tombol Edit -->
                                     <a href="{{ route('admin.keuangan.edit', $record->id) }}" class="btn btn-warning btn-sm me-1">
                                         <i class="fa fa-pencil-alt"></i>
                                     </a>
-
-                                    <!-- Tombol Hapus -->
                                     <form action="{{ route('admin.keuangan.destroy', $record->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -80,53 +103,48 @@
                     <tbody>
                         @php $totalPengeluaran = 0; @endphp
                         @foreach($records->where('jenis', 'Pengeluaran') as $record)
-                        <tr>
-                            <td>{{ $record->tanggal }}</td>
-                            <td>{{ $record->keterangan }}</td>
-                            <td>Rp {{ number_format($record->jumlah, 0, ',', '.') }}</td>
-                            <td class="d-flex">
-                                <!-- Tombol Detail -->
-                                <button class="btn btn-info btn-sm me-1" data-toggle="modal" data-target="#detailModal{{ $record->id }}">
-                                    <i class="fa fa-eye"></i>
-                                </button>
-
-                                <!-- Tombol Edit -->
-                                <a href="{{ route('admin.keuangan.edit', $record->id) }}" class="btn btn-warning btn-sm me-1">
-                                    <i class="fa fa-pencil-alt"></i>
-                                </a>
-
-                                <!-- Tombol Hapus -->
-                                <form action="{{ route('admin.keuangan.destroy', $record->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                        <i class="fa fa-trash"></i>
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($record->tanggal)->translatedFormat('d F Y') }}</td>
+                                <td>{{ $record->keterangan }}</td>
+                                <td>Rp {{ number_format($record->jumlah, 0, ',', '.') }}</td>
+                                <td class="d-flex">
+                                    <button class="btn btn-info btn-sm me-1" data-toggle="modal" data-target="#detailModal{{ $record->id }}">
+                                        <i class="fa fa-eye"></i>
                                     </button>
-                                </form>
-                            </td>
-                        </tr>
-
-                        <!-- Modal Detail Pengeluaran -->
-                        <div class="modal fade" id="detailModal{{ $record->id }}" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Detail Pengeluaran</h5>
-                                        <button type="button" class="close" data-dismiss="modal">
-                                            <span>&times;</span>
+                                    <a href="{{ route('admin.keuangan.edit', $record->id) }}" class="btn btn-warning btn-sm me-1">
+                                        <i class="fa fa-pencil-alt"></i>
+                                    </a>
+                                    <form action="{{ route('admin.keuangan.destroy', $record->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                            <i class="fa fa-trash"></i>
                                         </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <ul>
-                                            @foreach($record->details as $detail)
-                                                <li>{{ $detail->keterangan }}: Rp {{ number_format($detail->jumlah, 0, ',', '.') }}</li>
-                                            @endforeach
-                                        </ul>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <!-- Modal Detail Pengeluaran -->
+                            <div class="modal fade" id="detailModal{{ $record->id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Detail Pengeluaran</h5>
+                                            <button type="button" class="close" data-dismiss="modal">
+                                                <span>×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <ul>
+                                                @foreach($record->details as $detail)
+                                                    <li>{{ $detail->keterangan }}: Rp {{ number_format($detail->jumlah, 0, ',', '.') }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        @php $totalPengeluaran += $record->jumlah; @endphp
+                            @php $totalPengeluaran += $record->jumlah; @endphp
                         @endforeach
                     </tbody>
                     <tfoot>
@@ -151,6 +169,4 @@
         </div>
     </div>
 </div>
-
-
 @endsection

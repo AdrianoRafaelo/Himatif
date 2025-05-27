@@ -32,6 +32,7 @@
                 @include('admin.topbar')
                 <div class="container-fluid">
                     @yield('content')
+                    @yield('scripts')
                 </div>
             </div>
             @include('admin.footer')

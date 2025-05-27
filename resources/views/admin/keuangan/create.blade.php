@@ -44,6 +44,12 @@
 </div>
 
 <script>
+        // Membatasi tanggal maksimal ke hari ini
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[name="tanggal"]').setAttribute('max', today);
+    });
+
     document.getElementById('add-detail').addEventListener('click', function () {
         let container = document.getElementById('detail-container');
         let div = document.createElement('div');

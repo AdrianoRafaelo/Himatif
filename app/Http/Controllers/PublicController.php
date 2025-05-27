@@ -69,6 +69,17 @@ class PublicController extends Controller
             'periods' => $periods->toArray(),
         ]);
 
-        return view('organization', compact('bphs', 'prokers', 'period', 'periods'));
+        // Memisahkan proker yang sudah selesai dan yang belum
+        $prokersSelesai = $prokers->where('status', 'Selesai');
+        $prokersBelum = $prokers->where('status', '!=', 'Selesai');
+
+        return view('organization', [
+            'bphs' => $bphs,
+            'prokers' => $prokers,
+            'period' => $period,
+            'periods' => $periods,
+            'prokersSelesai' => $prokersSelesai,
+            'prokersBelum' => $prokersBelum,
+        ]);
     }
 }

@@ -59,6 +59,8 @@ Route::middleware('auth.custom')->group(function () {
     Route::get('/events/{eventId}/register', [StudentRegistrationController::class, 'create'])->name('student.register.create');
     Route::post('/student/register', [StudentRegistrationController::class, 'store'])->name('student.register.store');
 
+
+
 });
 
 // Rute khusus untuk admin
@@ -114,6 +116,11 @@ Route::middleware('auth.custom')->prefix('admin')->name('admin.')->group(functio
     Route::get('/kaprodi/proposals', [ProposalController::class, 'kaprodiIndex'])->name('kaprodi.proposals.index');
     Route::patch('/kaprodi/proposals/{proposal}/approve', [ProposalController::class, 'approve'])->name('kaprodi.proposals.approve');
     Route::patch('/kaprodi/proposals/{proposal}/reject', [ProposalController::class, 'reject'])->name('kaprodi.proposals.reject');
+
+    Route::get('/kaprodi/proker/reports', [ProkerController::class, 'reports'])->name('kaprodi.proker.reports');
+    Route::post('/proker/{id}/approve', [ProkerController::class, 'approve'])->name('kaprodi.proker.approve');
+    Route::post('/proker/{id}/reject', [ProkerController::class, 'reject'])->name('kaprodi.proker.reject');
+
 });
 
 Route::middleware('auth.custom')->group(function () {

@@ -174,31 +174,39 @@
     @endif
 
     <!-- Proposal Menu (Admin, Kaprodi, Bendahara) -->
-    @if(session('user')['role'] === 'admin' || session('user')['role'] === 'kaprodi' || session('user')['role'] === 'bendahara')
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProposal"
-                aria-expanded="true" aria-controls="collapseProposal">
-                <i class="fas fa-fw fa-file-alt"></i>
-                <span>Proposal</span>
-            </a>
-            <div id="collapseProposal" class="collapse" aria-labelledby="headingProposal" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded shadow-sm">
-                    @if(session('user')['role'] === 'admin')
-                        <a class="collapse-item" href="{{ route('admin.proposals.create') }}">
-                            <i class="fas fa-paper-plane fa-sm mr-2 text-primary"></i>Kirim Proposal
-                        </a>
-                        <a class="collapse-item" href="{{ route('admin.proposals.index') }}">
-                            <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Proposal
-                        </a>
-                    @elseif(session('user')['role'] === 'kaprodi' || session('user')['role'] === 'bendahara')
-                        <a class="collapse-item" href="{{ route('admin.kaprodi.proposals.index') }}">
-                            <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Proposal
-                        </a>
-                    @endif
-                </div>
-            </div>
-        </li>
-    @endif
+@if(session('user')['role'] === 'admin' || session('user')['role'] === 'kaprodi' || session('user')['role'] === 'bendahara')
+        <div id="collapseProker" class="collapse" aria-labelledby="headingProker" data-parent="#accordionSidebar">
+                @if(session('user')['role'] === 'admin')
+                    <a class="collapse-item" href="{{ route('proker.create') }}">
+                        <i class="fas fa-plus fa-sm mr-2 text-primary"></i>Buat Proker
+                    </a>
+                    <a class="collapse-item" href="{{ route('proker.index') }}">
+                        <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Proker
+                    </a>
+                @elseif(session('user')['role'] === 'bendahara')
+                    <a class="collapse-item" href="{{ route('proker.index') }}">
+                        <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Proker
+                    </a>
+                @endif
+        </div>
+    </li>
+@endif
+@if(session('user')['role'] === 'kaprodi')
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('admin.kaprodi.proker.reports') }}">
+        <i class="fas fa-fw fa-file-alt"></i>
+        <span>Tinjau Berita Acara</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('admin.kaprodi.proposals.index') }}">
+        <i class="fas fa-fw fa-file-alt"></i>
+        <span>Proposal</span>
+    </a>
+</li>
+
+@endif
 
     <!-- Admin-Only Features (News, Galeri, Visi Misi) -->
     @if(session('user')['role'] === 'admin')
@@ -207,15 +215,15 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseNews"
                 aria-expanded="true" aria-controls="collapseNews">
                 <i class="fas fa-fw fa-newspaper"></i>
-                <span>Berita</span>
+                <span>Berita&Pengumuman</span>
             </a>
             <div id="collapseNews" class="collapse" aria-labelledby="headingNews" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded shadow-sm">
                     <a class="collapse-item" href="{{ route('admin.news.index') }}">
-                        <i class="fas fa-eye fa-sm mr-2 text-primary"></i>Lihat Berita
+                        <i class="fas fa-eye fa-sm mr-2 text-primary"></i>Lihat daftar
                     </a>
                     <a class="collapse-item" href="{{ route('news.create') }}">
-                        <i class="fas fa-plus-circle fa-sm mr-2 text-primary"></i>Tambah Berita
+                        <i class="fas fa-plus-circle fa-sm mr-2 text-primary"></i>Tambah 
                     </a>
                 </div>
             </div>

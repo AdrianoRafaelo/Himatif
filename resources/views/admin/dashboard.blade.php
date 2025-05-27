@@ -310,4 +310,67 @@
             </div>
         @endif
     </div>
+    <!-- Dropdown Filter Periode Grafik Keuangan -->
+<form method="GET" class="mb-3 px-4">
+    <label for="periode" class="me-2 fw-bold">Periode Grafik:</label>
+    <select name="periode" id="periode" onchange="this.form.submit()" class="form-select w-auto d-inline">
+        <option value="3" {{ request('periode', '3') == '3' ? 'selected' : '' }}>3 Bulan Terakhir</option>
+        <option value="6" {{ request('periode') == '6' ? 'selected' : '' }}>6 Bulan Terakhir</option>
+        <option value="12" {{ request('periode') == '12' ? 'selected' : '' }}>12 Bulan (Setahun)</option>
+    </select>
+</form>
+    <!-- Grafik Keuangan -->
+<div class="row px-4 fade-in">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Grafik Keuangan Tahun {{ date('Y') }}</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="keuanganChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('keuanganChart').getContext('2d');
+    const keuanganChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @json($bulanLabels),
+            datasets: [
+                {
+                    label: 'Pemasukan',
+                    data: @json($pemasukanData),
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                },
+                {
+                    label: 'Pengeluaran',
+                    data: @json($pengeluaranData),
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 @endsection

@@ -129,19 +129,19 @@
 
     @php
     $userRole = session('user')['role'];
-@endphp
+    @endphp
 
-@if($userRole === 'admin')
-    <a href="{{ route('proker.create') }}" class="btn btn-primary mb-3">Buat Proker Baru</a>
-@else
-    <button class="btn btn-primary mb-3 disabled" onclick="showAccessDeniedAlert()">Buat Proker Baru</button>
-@endif
+    @if($userRole === 'admin')
+        <a href="{{ route('proker.create') }}" class="btn btn-primary mb-3">Buat Proker Baru</a>
+    @else
+        <button class="btn btn-primary mb-3 disabled" onclick="showAccessDeniedAlert()">Buat Proker Baru</button>
+    @endif
 
-<script>
-    function showAccessDeniedAlert() {
-        alert('Tidak dapat di akses, (hanya admin)');
-    }
-</script>
+    <script>
+        function showAccessDeniedAlert() {
+            alert('Tidak dapat di akses, (hanya admin)');
+        }
+    </script>
     <table class="table mt-3">
         <thead>
             <tr>
@@ -151,6 +151,7 @@
                 <th>Rencana Tanggal</th>
                 <th>Realisasi Tanggal</th>
                 <th>Status</th>
+                <th>Status Persetujuan</th>
                 <th>Periode</th>
                 @if(session('user')['role'] === 'admin')
                 <th>Aksi</th>
@@ -166,6 +167,7 @@
                     <td>{{ $proker->planned_date ? \Carbon\Carbon::parse($proker->planned_date)->format('Y-m') : '-' }}</td>
                     <td>{{ $proker->actual_date ? \Carbon\Carbon::parse($proker->actual_date)->format('Y-m-d') : '-' }}</td>
                     <td>{{ $proker->status }}</td>
+                    <td>{{ $proker->approval_status ? ucfirst($proker->approval_status) : 'Belum ada' }}</td>
                     <td>{{ $proker->period }}</td>
                     <td>
                         @if(session('user')['role'] === 'admin')
@@ -183,8 +185,6 @@
                             </div>
                         @endif
                     </td>
-                    
-                    
                 </tr>
             @endforeach
         </tbody>

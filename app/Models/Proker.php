@@ -22,11 +22,18 @@ class Proker extends Model
         'status',
         'period',
         'created_by',
+        'report_file', // Tambahkan kolom baru
+        'approval_status',
+        'approved_by',
     ];
-    
 
     public function creator()
     {
         return $this->belongsTo(LocalUser::class, 'created_by');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(LocalUser::class, 'approved_by');
     }
 }

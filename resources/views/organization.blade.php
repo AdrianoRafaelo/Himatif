@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Organisasi HMIF')
+@section('title', 'Organisasi HIMATIFF')
 
 @section('content')
 <style>
@@ -235,8 +235,8 @@
 
 <div class="organization-container">
     <div class="page-header">
-        <h1>Organisasi HMIF</h1>
-        <p class="text-muted">Struktur organisasi dan program kerja HMIF</p>
+        <h1>Organisasi HIMATIF</h1>
+        <p class="text-muted">Struktur organisasi dan program kerja HIMATIF</p>
     </div>
 
     <!-- Filter Periode -->
@@ -283,79 +283,152 @@
         @endif
     </div>
 
-    <!-- Daftar Proker -->
-    <div class="mb-5">
-        <h2 class="section-header">Program Kerja Periode {{ $period }}</h2>
-        @if($prokers->isEmpty())
-            <div class="empty-state">
-                <i class="far fa-folder-open"></i>
-                <h4>Tidak ada program kerja untuk periode {{ $period }}</h4>
-                <p>Silakan pilih periode lain atau hubungi admin untuk informasi lebih lanjut</p>
-            </div>
-        @else
-            <div class="proker-grid">
-                @foreach($prokers as $proker)
-                    <div class="proker-card">
-                        <div class="proker-card-header">
-                            <h5><i class="fas fa-file-alt"></i> {{ $proker->subject }}</h5>
-                        </div>
-                        <div class="proker-card-body">
-                            <ul class="list-unstyled mb-3">
-                                <li><i class="fas fa-map-marker-alt"></i> <strong>Lokasi:</strong> {{ $proker->location ?? '-' }}</li>
-                                <li><i class="far fa-calendar"></i> <strong>Rencana Tanggal:</strong> {{ $proker->planned_date ? \Carbon\Carbon::parse($proker->planned_date)->translatedFormat('F Y') : '-' }}</li>
-                                <li><i class="fas fa-calendar-day"></i> <strong>Periode:</strong> {{ $proker->period }}</li>
-                                <li><i class="fas fa-info-circle"></i> <strong>Status:</strong> 
-                                    <span class="status-badge status-{{ strtolower($proker->status) }}">
-                                        {{ $proker->status }}
-                                    </span>
-                                </li>
-                            </ul>
+    <!-- Daftar Judul Program Kerja -->
+    <h2 class="section-header">Program Kerja Periode {{ $period }}</h2>
+    @if($prokers->isEmpty())
+        <div class="empty-state">
+            <i class="far fa-folder-open"></i>
+            <h4>Tidak ada program kerja untuk periode {{ $period }}</h4>
+            <p>Silakan pilih periode lain atau hubungi admin untuk informasi lebih lanjut</p>
+        </div>
+    @else
+        <ul class="list-group mb-4">
+            @foreach($prokers as $proker)
+                <li class="list-group-item">
+                    <i class="fas fa-file-alt me-2"></i> {{ $proker->subject }}
+                </li>
+            @endforeach
+        </ul>
+    @endif
 
-                            <!-- Tombol Buka Modal -->
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#prokerModal{{ $proker->id }}">
-                                Lihat Detail
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Modal untuk Detail Proker -->
-                    <div class="modal fade" id="prokerModal{{ $proker->id }}" tabindex="-1" aria-labelledby="prokerModalLabel{{ $proker->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="prokerModalLabel{{ $proker->id }}">
-                                        {{ $proker->subject }}
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p><strong>Deskripsi:</strong><br>{{ $proker->description }}</p>
-                                    <p><strong>Tujuan:</strong><br>{{ $proker->objective ?? '-' }}</p>
-                                    <p><strong>Lokasi:</strong> {{ $proker->location ?? '-' }}</p>
-                                    <p><strong>Rencana Tanggal:</strong> {{ $proker->planned_date ? \Carbon\Carbon::parse($proker->planned_date)->translatedFormat('d F Y') : '-' }}</p>
-                                    <p><strong>Realisasi Tanggal:</strong> {{ $proker->actual_date ? \Carbon\Carbon::parse($proker->actual_date)->translatedFormat('d F Y') : '-' }}</p>
-                                    <p><strong>Periode:</strong> {{ $proker->period }}</p>
-                                    <p><strong>Status:</strong>
-                                        <span class="status-badge status-{{ strtolower($proker->status) }}">
-                                            {{ $proker->status }}
-                                        </span>
-                                    </p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- Pagination -->
-            <div class="d-flex justify-content-center mt-4">
-                {{ $prokers->links() }}
-            </div>
-        @endif
+    <!-- Proker Belum Selesai -->
+    <h2 class="section-header">Program Kerja Berjalan / Belum Selesai</h2>
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Perihal</th>
+                    <th>Tujuan</th>
+                    <th>Lokasi</th>
+                    <th>Rencana Tanggal</th>
+                    <th>Status</th>
+                    <th>Periode</th>
+                    <th>Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($prokersBelum as $proker)
+                <tr>
+                    <td>{{ $proker->subject }}</td>
+                    <td>{{ $proker->objective }}</td>
+                    <td>{{ $proker->location }}</td>
+                    <td>{{ $proker->planned_date ? \Carbon\Carbon::parse($proker->planned_date)->translatedFormat('F Y') : '-' }}</td>
+                    <td>
+                        <span class="status-badge status-{{ strtolower($proker->status) }}">
+                            {{ $proker->status }}
+                        </span>
+                    </td>
+                    <td>{{ $proker->period }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#prokerModal{{ $proker->id }}">
+                            Lihat Detail
+                        </button>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Tidak ada proker berjalan.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
+
+    <!-- Proker Selesai -->
+    <h2 class="section-header">Program Kerja Selesai</h2>
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Perihal</th>
+                    <th>Rencana Tanggal</th>
+                    <th>Realisasi Tanggal</th>
+                    <th>Status</th>
+                    <th>Realisasi Anggaran</th>
+                    <th>Detail</th>
+                    <th>Berita Acara</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($prokersSelesai as $proker)
+                <tr>
+                    <td>{{ $proker->subject }}</td>
+                    <td>{{ $proker->planned_date ? \Carbon\Carbon::parse($proker->planned_date)->translatedFormat('F Y') : '-' }}</td>
+                    <td>{{ $proker->actual_date ? \Carbon\Carbon::parse($proker->actual_date)->translatedFormat('d F Y') : '-' }}</td>
+                    <td>
+                        <span class="status-badge status-{{ strtolower($proker->status) }}">
+                            {{ $proker->status }}
+                        </span>
+                    </td>
+                    <td>Rp {{ number_format($proker->actual_budget, 0, ',', '.') }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#prokerModal{{ $proker->id }}">
+                            Lihat Detail
+                        </button>
+                    </td>
+                    <td>
+                        @if($proker->report_file)
+                            <a href="{{ Storage::url($proker->report_file) }}" class="btn btn-sm btn-success" target="_blank" download>
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        @else
+                            <span class="text-muted">-</span>
+                        @endif
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Tidak ada proker selesai.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Detail Proker (untuk semua proker) -->
+    @foreach($prokers as $proker)
+    <div class="modal fade" id="prokerModal{{ $proker->id }}" tabindex="-1" aria-labelledby="prokerModalLabel{{ $proker->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="prokerModalLabel{{ $proker->id }}">
+                        {{ $proker->subject }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Deskripsi:</strong><br>{{ $proker->description }}</p>
+                    <p><strong>Tujuan:</strong><br>{{ $proker->objective ?? '-' }}</p>
+                    <p><strong>Lokasi:</strong> {{ $proker->location ?? '-' }}</p>
+                    <p><strong>Rencana Tanggal:</strong> {{ $proker->planned_date ? \Carbon\Carbon::parse($proker->planned_date)->translatedFormat('d F Y') : '-' }}</p>
+                    <p><strong>Realisasi Tanggal:</strong> {{ $proker->actual_date ? \Carbon\Carbon::parse($proker->actual_date)->translatedFormat('d F Y') : '-' }}</p>
+                    <p><strong>Periode:</strong> {{ $proker->period }}</p>
+                    <p><strong>Status:</strong>
+                        <span class="status-badge status-{{ strtolower($proker->status) }}">
+                            {{ $proker->status }}
+                        </span>
+                    </p>
+                    <p><strong>Sumber Dana:</strong> {{ $proker->funding_source ?? '-' }}</p>
+                    <p><strong>Rencana Anggaran:</strong> Rp {{ number_format($proker->planned_budget, 0, ',', '.') }}</p>
+                    <p><strong>Realisasi Anggaran:</strong> Rp {{ number_format($proker->actual_budget, 0, ',', '.') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
 </div>
 
 <script>

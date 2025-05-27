@@ -145,11 +145,53 @@
         display: inline-block;
         margin-left: 5px;
     }
+
+    /* Type Badge Styles */
+    .type-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .type-news {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .type-announcement {
+        background-color: #28a745;
+        color: white;
+    }
+
+    /* Filter Styles */
+    .filter-form {
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    .filter-select {
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+        font-size: 14px;
+    }
 </style>
 <div class="container">
-    <h1 class="mb-4">Daftar Berita</h1>
+    <h1 class="mb-4">Daftar Berita & Pengumuman</h1>
     
-    <a href="{{ route('news.create') }}" class="btn btn-primary mb-3">Tambah Berita</a>
+    <div class="mb-3">
+        <a href="{{ route('news.create') }}" class="btn btn-primary">Tambah Berita atau Pengumuman</a>
+        
+        <form class="filter-form" action="{{ route('admin.news.index') }}" method="GET">
+            <select class="filter-select" name="type" onchange="this.form.submit()">
+                <option value="" {{ !$type ? 'selected' : '' }}>Semua</option>
+                <option value="news" {{ $type == 'news' ? 'selected' : '' }}>Berita</option>
+                <option value="announcement" {{ $type == 'announcement' ? 'selected' : '' }}>Pengumuman</option>
+            </select>
+        </form>
+    </div>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -159,6 +201,7 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>Tipe</th>
                 <th>Gambar</th>
                 <th>Judul</th>
                 <th>Konten</th>
@@ -166,24 +209,29 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($news as $index => $news)
+            @forelse ($news as $index => $item)
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>
-                        @if ($news->image)
-                            <img src="{{ asset('storage/' . $news->image) }}" alt="Gambar" width="100">
+                        <span class="type-badge {{ $item->type === 'news' ? 'type-news' : 'type-announcement' }}">
+                            {{ $item->type === 'news' ? 'Berita' : 'Pengumuman' }}
+                        </span>
+                    </td>
+                    <td>
+                        @if ($item->type === 'news' && $item->image)
+                            <img src="{{ asset('storage/' . $item->image) }}" alt="Gambar" width="100">
                         @else
                             Tidak ada gambar
                         @endif
                     </td>
-                    <td>{{ $news->title }}</td>
-                    <td>{{ Str::limit(strip_tags($news->content), 100) }}</td>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ Str::limit(strip_tags($item->content), 100) }}</td>
                     <td>
                         <div class="d-flex gap-1">
-                            <a href="{{ route('news.edit', $news->id) }}" class="btn btn-warning btn-sm" title="Edit">
+                            <a href="{{ route('news.edit', $item->id) }}" class="btn btn-warning btn-sm" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('news.destroy', $news->id) }}" method="POST" onsubmit="return confirm('Yakin hapus?')">
+                            <form action="{{ route('news.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin hapus?')">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-danger btn-sm" title="Hapus">
@@ -192,11 +240,10 @@
                             </form>
                         </div>
                     </td>
-                    
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="text-center">Belum ada berita.</td>
+                    <td colspan="6" class="text-center">Belum ada {{ $type == 'news' ? 'berita' : ($type == 'announcement' ? 'pengumuman' : 'berita atau pengumuman') }}.</td>
                 </tr>
             @endforelse
         </tbody>

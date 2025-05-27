@@ -36,13 +36,16 @@
         @if(session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
-        <form action="{{ route('proker.store') }}" method="POST">
+        <form action="{{ route('proker.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="form-group mb-3">
                 <div class="input-icon-container">
-                    <label for="subject">Perihal <span class="text-danger">*</span></label>
+                    <label for="subject">Judul <span class="text-danger">*</span></label>
                     <i class="fas fa-file-alt input-icon"></i>
                 </div>
                 <input type="text" class="form-control" id="subject" name="subject" value="{{ old('subject') }}" placeholder="Masukkan perihal proker" required>
@@ -217,6 +220,21 @@
                 </div>
             </div>
             
+            <!-- Tambahkan field upload berita acara -->
+            @if(old('status') == 'Pelaksanaan')
+            <div class="form-group mb-3">
+                <div class="input-icon-container">
+                    <label for="report_file">Berita Acara</label>
+                    <i class="fas fa-file-upload input-icon"></i>
+                </div>
+                <input type="file" class="form-control" id="report_file" name="report_file" accept=".pdf">
+                <small class="form-text">Unggah berita acara dalam format PDF (maks. 5MB).</small>
+                @error('report_file')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            @endif
+
             <div class="form-buttons">
                 <a href="{{ route('proker.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i> Batal

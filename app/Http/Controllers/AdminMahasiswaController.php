@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use App\Models\FinancialRecord;
 
 class AdminMahasiswaController extends Controller
 {
@@ -130,6 +131,7 @@ class AdminMahasiswaController extends Controller
         ];
 
         $notifications = [];
+        $totalMahasiswaBayar = 0; // Variabel untuk menghitung jumlah mahasiswa yang membayar
 
         foreach ($mahasiswaBayar as $nim => $data) {
             if (isset($data['bayar']) && $data['bayar'] == '1') {
@@ -146,6 +148,8 @@ class AdminMahasiswaController extends Controller
                         'tanggal_bayar' => now()->toDateString()
                     ]
                 );
+
+                $totalMahasiswaBayar++; // Tambah jumlah mahasiswa yang membayar
 
                 $message = "Uang kas {$bulanList[$bulan]} sudah dibayar";
 
@@ -173,10 +177,59 @@ class AdminMahasiswaController extends Controller
             }
         }
 
+        // Hitung total pemasukan (jumlah mahasiswa yang membayar × 5000)
+        $totalPemasukan = $totalMahasiswaBayar * 5000;
+
+        // Cek apakah sudah ada pemasukan untuk bulan dan tahun ini
+        $tanggalPemasukan = "{$tahun}-" . str_pad($bulan, 2, '0', STR_PAD_LEFT) . "-01";
+
+        $existingRecord = FinancialRecord::where('keterangan', "Pemasukan Kas Mahasiswa {$bulanList[$bulan]} {$tahun}")
+            ->whereDate('tanggal', $tanggalPemasukan)
+            ->first();
+
+        if ($existingRecord) {
+            $existingRecord->update([
+                'jumlah' => $totalPemasukan,
+                'tanggal' => $tanggalPemasukan,
+            ]);
+        } else {
+            FinancialRecord::create([
+                'tanggal' => $tanggalPemasukan,
+                'keterangan' => "Pemasukan Kas Mahasiswa {$bulanList[$bulan]} {$tahun}",
+                'jenis' => 'Pemasukan',
+                'jumlah' => $totalPemasukan,
+            ]);
+        }
+
+
         if (!empty($notifications)) {
             session()->flash('notifications', $notifications);
         }
 
-        return back()->with('success', 'Data pembayaran berhasil disimpan.');
+        Log::info('Pemasukan kas mahasiswa disimpan', [
+            'bulan' => $bulanList[$bulan],
+            'tahun' => $tahun,
+            'total_mahasiswa' => $totalMahasiswaBayar,
+            'total_pemasukan' => $totalPemasukan
+        ]);
+
+        return back()->with('success', 'Data pembayaran dan pemasukan keuangan berhasil disimpan.');
     }
+    public function getPayments(Request $request)
+{
+    $bulan = $request->query('bulan');
+    $tahun = $request->query('tahun');
+
+    $query = \App\Models\Payment::query();
+
+    if ($bulan) $query->where('bulan', $bulan);
+    if ($tahun) $query->where('tahun', $tahun);
+
+    $payments = $query->get();
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $payments
+    ]);
+}
 }
