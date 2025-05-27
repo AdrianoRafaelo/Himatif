@@ -17,6 +17,7 @@ class LocalUser extends Model
         'nim',
         'angkatan',
         'prodi',
+        'email',
         'role',
     ];
 

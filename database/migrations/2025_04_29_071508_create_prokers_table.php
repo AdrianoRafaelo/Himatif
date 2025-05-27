@@ -28,7 +28,6 @@ return new class extends Migration
 
             // Relasi ke local_users
             $table->foreign('created_by')->references('id')->on('local_users')->onDelete('cascade');
-            $table->foreign('approved_by')->references('id')->on('local_users')->onDelete('set null');
         });
     }
 

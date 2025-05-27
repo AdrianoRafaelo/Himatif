@@ -33,7 +33,14 @@
         </div>
     </form>
 
-    <a href="{{ route('admin.keuangan.create') }}" class="btn btn-primary mb-4">+ Tambah Data</a>
+    {{-- Tombol tambah data hanya untuk bendahara --}}
+    @if(session('user')['role'] === 'bendahara')
+        <a href="{{ route('admin.keuangan.create') }}" class="btn btn-primary mb-4">+ Tambah Data</a>
+    @endif
+
+    <a href="{{ route('admin.keuangan.download', ['bulan' => request('bulan'), 'tahun' => request('tahun')]) }}" class="btn btn-success mb-4">
+        <i class="fa fa-file-excel"></i> Download Excel
+    </a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

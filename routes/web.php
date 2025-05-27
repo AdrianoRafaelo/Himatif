@@ -17,6 +17,7 @@ use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CampusApiMahasiswaController;
 
 
 /*
@@ -55,6 +56,7 @@ Route::middleware('auth.custom')->group(function () {
     Route::get('/admin/keuangan/{id}/edit', [KeuanganController::class, 'edit'])->name('admin.keuangan.edit');
     Route::put('/admin/keuangan/{id}', [KeuanganController::class, 'update'])->name('admin.keuangan.update');
     Route::delete('/admin/keuangan/{id}', [KeuanganController::class, 'destroy'])->name('admin.keuangan.destroy');
+    Route::get('/admin/keuangan/download', [KeuanganController::class, 'downloadExcel'])->name('admin.keuangan.download');
     
     Route::get('/events/{eventId}/register', [StudentRegistrationController::class, 'create'])->name('student.register.create');
     Route::post('/student/register', [StudentRegistrationController::class, 'store'])->name('student.register.store');
@@ -157,4 +159,27 @@ Route::patch('/registrations/{id}/attendance', [StudentRegistrationController::c
 
 // Tambahkan route untuk ekspor
 Route::get('/registrations/export/{eventId?}', [StudentRegistrationController::class, 'export'])->name('registrations.export');
+
+// Admin melihat data registrasi (akses dibatasi)
+Route::middleware('auth.admin')->prefix('admin')->group(function () {
+    Route::get('/partisipan', [StudentRegistrationController::class, 'index'])->name('admin.partisipan.index');
+    Route::get('/partisipan/event/{eventId}', [StudentRegistrationController::class, 'showParticipants'])->name('admin.partisipan.show');
+    Route::patch('/partisipan/update-attendance/{id}', [StudentRegistrationController::class, 'updateAttendance'])->name('admin.partisipan.updateAttendance');
+    Route::post('/partisipan/update-attendance-bulk', [StudentRegistrationController::class, 'updateAttendanceBulk'])->name('admin.partisipan.updateAttendanceBulk');
+    Route::get('/partisipan/export/{eventId?}', [StudentRegistrationController::class, 'export'])->name('admin.partisipan.export');
+});
+Route::get('/admin/event/{event}/participants', [EventController::class, 'showParticipants'])->name('admin.event.participants');
+
+Route::middleware('auth.admin')->prefix('admin')->group(function () {
+    Route::get('/campus-students', [CampusApiMahasiswaController::class, 'listStudents'])->name('admin.campus-students.index');
+    Route::post('/campus-students/fetch-and-save', [CampusApiMahasiswaController::class, 'fetchAndSaveAllStudents'])->name('admin.campus-students.fetch-and-save');
+});
 ?>
+
+
+
+
+
+
+
+

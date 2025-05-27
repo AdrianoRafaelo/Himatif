@@ -11,7 +11,8 @@ class StudentRegistration extends Model
         'student_name',
         'username',
         'email',
-        'attendance_status',
+        'hadir',
+        'tidak_hadir',
         'nim',
         'angkatan',
         'prodi'

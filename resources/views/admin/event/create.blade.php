@@ -119,21 +119,20 @@
                             @error('banner_path')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="mb-3">
-                                <label for="angkatan_akses" class="form-label">Angkatan yang Bisa Mendaftar</label>
-                                <input type="text" name="angkatan_akses" id="angkatan_akses" class="form-control @error('angkatan_akses') is-invalid @enderror" value="{{ old('angkatan_akses') }}" placeholder="Contoh: 2021,2022,2023" {{ old('semua_angkatan') ? 'disabled' : '' }}>
-                                <div class="form-check mt-2">
-                                    <input class="form-check-input" type="checkbox" value="1" id="semua_angkatan" name="semua_angkatan" {{ old('semua_angkatan') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="semua_angkatan">
-                                        Untuk semua angkatan
-                                    </label>
-                                </div>
-                                <small class="text-muted">Pisahkan dengan koma jika lebih dari satu angkatan. Jika memilih "Untuk semua angkatan", input manual akan diabaikan.</small>
-                                @error('angkatan_akses')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="angkatan_akses">Angkatan yang Bisa Mendaftar</label>
+                            <input type="text" name="angkatan_akses" id="angkatan_akses" class="form-control @error('angkatan_akses') is-invalid @enderror" value="{{ old('angkatan_akses') }}" placeholder="Contoh: 2021,2022,2023" {{ old('semua_angkatan') ? 'disabled' : '' }}>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" value="1" id="semua_angkatan" name="semua_angkatan" {{ old('semua_angkatan') ? 'checked' : '' }} onchange="toggleAngkatanInput()">
+                                <label class="form-check-label" for="semua_angkatan">
+                                    Untuk Semua Angkatan
+                                </label>
                             </div>
-
+                            <small class="text-muted">Masukkan angkatan yang diizinkan untuk mendaftar (pisahkan dengan koma, contoh: 2021,2022,2023). Centang 'Untuk Semua Angkatan' jika ingin semua angkatan bisa mendaftar secara manual.</small>
+                            @error('angkatan_akses')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save mr-2"></i>Simpan
@@ -147,4 +146,15 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleAngkatanInput() {
+    const semuaAngkatan = document.getElementById('semua_angkatan').checked;
+    const angkatanInput = document.getElementById('angkatan_akses');
+    angkatanInput.disabled = semuaAngkatan;
+    if (semuaAngkatan) {
+        angkatanInput.value = '';
+    }
+}
+</script>
 @endsection

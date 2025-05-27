@@ -51,8 +51,9 @@ class AuthController extends Controller
                                 $prodi    = $mahasiswa['prodi_name'];
                                 $nim      = $mahasiswa['nim'];
                                 $angkatan = $mahasiswa['angkatan'];
+                                $email    = $mahasiswa['email'] ?? null;
 
-                                // Buat atau update user lokal
+                                // Simpan ke database lokal
                                 $localUser = LocalUser::updateOrCreate(
                                     ['username' => $username],
                                     [
@@ -60,7 +61,8 @@ class AuthController extends Controller
                                         'nim'      => $nim,
                                         'angkatan' => $angkatan,
                                         'prodi'    => $prodi,
-                                        'password' => Hash::make($password), // Hash password
+                                        'email'    => $email,
+                                        'password' => Hash::make($password),
                                     ]
                                 );
 
@@ -71,14 +73,15 @@ class AuthController extends Controller
 
                                 $role = $localUser->role;
 
-                                // Simpan session dengan menambahkan nim
+                                // Simpan session lengkap
                                 session([
                                     'token' => $token,
                                     'user' => array_merge($user, [
                                         'nama'  => $nama,
                                         'prodi' => $prodi,
                                         'role'  => $role,
-                                        'nim'   => $nim, // Tambahkan nim ke session
+                                        'nim'   => $nim,
+                                        'email' => $email, // ← disimpan di session
                                     ])
                                 ]);
 
@@ -100,6 +103,7 @@ class AuthController extends Controller
             return back()->withErrors(['login' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
     }
+
 
     public function logout()
     {

@@ -3,40 +3,15 @@
 @section('title', 'Registrasi Event')
 
 @section('content')
-<div class="container mt-5">
-    <h2>Registrasi untuk Event: {{ $event->name }}</h2>
+<div class="container">
+    <h2>Daftar ke Event: {{ $event->nama_event }}</h2>
 
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('student.register.store') }}" method="POST">
+    <form action="{{ route('event.register.store', ['eventId' => $event->id]) }}" method="POST">
         @csrf
         <input type="hidden" name="event_id" value="{{ $event->id }}">
 
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" value="{{ old('username') }}" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Daftar</button>
+        <p>Apakah Anda yakin ingin mendaftar ke event ini?</p>
+        <button type="submit" class="btn btn-primary">Daftar Sekarang</button>
     </form>
 </div>
 @endsection

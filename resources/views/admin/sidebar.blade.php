@@ -191,6 +191,14 @@
         </div>
     </li>
 @endif
+@if(session('user')['role'] === 'admin')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.campus-students.index') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Data Mahasiswa</span>
+                </a>
+            </li>
+@endif
 @if(session('user')['role'] === 'kaprodi')
 <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.kaprodi.proker.reports') }}">
@@ -198,6 +206,13 @@
         <span>Tinjau Berita Acara</span>
     </a>
 </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.keuangan.index') }}">
+            <i class="fas fa-fw fa-file-invoice-dollar"></i>
+            <span>Laporan Keuangan</span>
+        </a>
+    </li>
 
 <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.kaprodi.proposals.index') }}">

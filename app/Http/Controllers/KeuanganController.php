@@ -6,22 +6,13 @@ use App\Models\Detail;
 use App\Models\FinancialRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Exports\FinancialRecordsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KeuanganController extends Controller
 {
-    // Fungsi bantu untuk memeriksa role
-    private function checkBendaharaRole()
-    {
-        $user = Session::get('user');
-        if (!$user || !isset($user['role']) || $user['role'] !== 'bendahara') {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini. Hanya bendahara yang diperbolehkan.');
-        }
-    }
-
     public function index(Request $request)
     {
-        $this->checkBendaharaRole();
-
         // Ambil parameter bulan dan tahun dari query string
         $bulan = $request->query('bulan');
         $tahun = $request->query('tahun');
@@ -105,14 +96,11 @@ class KeuanganController extends Controller
 
     public function create()
     {
-        $this->checkBendaharaRole();
         return view('admin.keuangan.create');
     }
 
     public function store(Request $request)
     {
-        $this->checkBendaharaRole();
-
         $request->validate([
             'tanggal' => 'required|date',
             'keterangan' => 'required',
@@ -141,15 +129,12 @@ class KeuanganController extends Controller
 
     public function edit($id)
     {
-        $this->checkBendaharaRole();
         $record = FinancialRecord::with('details')->findOrFail($id);
         return view('admin.keuangan.edit', compact('record'));
     }
 
     public function update(Request $request, $id)
     {
-        $this->checkBendaharaRole();
-
         $request->validate([
             'tanggal' => 'required|date',
             'keterangan' => 'required|string',
@@ -180,10 +165,16 @@ class KeuanganController extends Controller
 
     public function destroy($id)
     {
-        $this->checkBendaharaRole();
         $record = FinancialRecord::findOrFail($id);
         $record->details()->delete();
         $record->delete();
         return redirect()->route('admin.keuangan.index')->with('success', 'Data berhasil dihapus.');
+    }
+
+    public function downloadExcel(Request $request)
+    {
+        $bulan = $request->query('bulan');
+        $tahun = $request->query('tahun');
+        return Excel::download(new FinancialRecordsExport($bulan, $tahun), 'keuangan_himatif.xlsx');
     }
 }

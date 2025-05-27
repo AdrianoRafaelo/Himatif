@@ -22,7 +22,8 @@
                $table->string('nim')->nullable();
                $table->string('angkatan')->nullable();
                $table->string('prodi')->nullable();
-               $table->string('attendance_status')->default('Belum Dikonfirmasi');
+                $table->boolean('hadir')->default(false);
+                $table->boolean('tidak_hadir')->default(false);
                $table->timestamps();
 
                // Foreign key constraint
