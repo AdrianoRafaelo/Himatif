@@ -190,7 +190,9 @@
                             <option value="Perencanaan" {{ old('status') == 'Perencanaan' ? 'selected' : '' }}>Perencanaan</option>
                             <option value="Persiapan" {{ old('status') == 'Persiapan' ? 'selected' : '' }}>Persiapan</option>
                             <option value="Pelaksanaan" {{ old('status') == 'Pelaksanaan' ? 'selected' : '' }}>Pelaksanaan</option>
+                            @if(auth()->user() && auth()->user()->role == 'kaprodi')
                             <option value="Selesai" {{ old('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                            @endif
                         </select>
                         @error('status')
                             <small class="text-danger">{{ $message }}</small>

@@ -218,7 +218,12 @@ public function approve(Request $request, $id)
         'status' => 'Selesai',
     ]);
 
-    return redirect()->route('admin.kaprodi.proker.reports')->with('success', 'Berita acara disetujui, status proker diperbarui.');
+    // Update semua event yang terkait proker ini menjadi selesai
+    \App\Models\Event::where('proker_id', $proker->id)
+        ->where('status', '!=', 'completed') // Hanya update yang belum selesai
+        ->update(['status' => 'completed']);
+
+    return redirect()->route('admin.kaprodi.proker.reports')->with('success', 'Berita acara disetujui, status proker dan event terkait diperbarui.');
 }
 
 public function reject(Request $request, $id)

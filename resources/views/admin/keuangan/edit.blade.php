@@ -12,7 +12,7 @@
 
         <div class="mb-3">
             <label class="form-label">Tanggal</label>
-            <input type="date" name="tanggal" class="form-control" value="{{ $record->tanggal }}" required>
+            <input type="date" name="tanggal" class="form-control" value="{{ $record->tanggal }}" max="{{ date('Y-m-d') }}" required>
         </div>
 
         <div class="mb-3">
@@ -57,6 +57,10 @@
 <!-- Script untuk tambah/hapus detail -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    // Membatasi tanggal maksimal ke hari ini
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelector('input[name="tanggal"]').setAttribute('max', today);
+
     document.getElementById("add-detail").addEventListener("click", function() {
         let container = document.getElementById("detail-container");
         let div = document.createElement("div");

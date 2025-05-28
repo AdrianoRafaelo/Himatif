@@ -24,9 +24,9 @@ class StudentController extends Controller
             return redirect('/')->with('error', 'Akses ditolak. Anda bukan mahasiswa atau belum login.');
         }
 
-        // Ambil data berita terbaru
-    $news = News::latest()->take(3)->get();
-    $events = Event::latest()->take(3)->get(); 
+            // Ambil semua berita dan pengumuman, urutkan terbaru
+        $news = News::orderBy('published_at', 'desc')->get();
+        $events = Event::latest()->take(3)->get(); 
 
     return view('student', compact('user', 'news', 'events'));
     }

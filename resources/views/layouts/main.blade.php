@@ -221,8 +221,8 @@
                     <img src="{{ asset('img/carousel-1.jpg') }}" class="d-block w-100" alt="Campus Event">
                     <div class="carousel-caption">
                         <div class="caption-content">
-                            <h2>Lorem Ipsum Dolor Sit</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span class="highlight">Sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua.</p>
+                            <h2>Welcoming Party</h2>
+                            <p>penyambutan anggota baru mahasiswa D3 Teknologi Informasi</p>
                             <a href="#" class="btn mt-3">Discover</a>
                         </div>
                     </div>
@@ -232,8 +232,8 @@
                     <img src="{{ asset('img/carousel-2.jpg') }}" class="d-block w-100" alt="Workshop">
                     <div class="carousel-caption">
                         <div class="caption-content">
-                            <h2>Ut Enim Ad Minim</h2>
-                            <p>Ut enim ad minim veniam, quis nostrud exercitation <span class="highlight">ullamco laboris</span> nisi ut aliquip ex ea commodo consequat.</p>
+                            <h2>Welcoming Party</h2>
+                            <p>penyambutan anggota baru mahasiswa D3 Teknologi Informasi</p>
                             <a href="#" class="btn mt-3">Explore</a>
                         </div>
                     </div>
@@ -243,8 +243,8 @@
                     <img src="{{ asset('img/carousel-3.jpg') }}" class="d-block w-100" alt="Community">
                     <div class="carousel-caption">
                         <div class="caption-content">
-                            <h2>Duis Aute Irure Dolor</h2>
-                            <p>Duis aute irure dolor in reprehenderit in voluptate <span class="highlight">velit esse cillum</span> dolore eu fugiat nulla pariatur.</p>
+                            <h2>Welcoming Party</h2>
+                            <p>penyambutan anggota baru mahasiswa D3 Teknologi Informasi</p>
                             <a href="#" class="btn mt-3">Join Now</a>
                         </div>
                     </div>

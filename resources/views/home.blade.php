@@ -8,7 +8,7 @@
             <div class="col-lg-6 mb-5 mb-lg-0">
                 <span class="section-subheading">Selamat Datang di</span>
                 <h1 class="display-title">Himpunan Mahasiswa <span class="text-gradient">Teknologi Informasi</span></h1>
-                <p class="body-large mb-4">Wadah bagi mahasiswa Teknik Informatika untuk mengembangkan potensi akademik, soft skill, dan memperluas jaringan profesional.</p>
+                <p class="body-large mb-4">Wadah bagi mahasiswa Teknologi Informasi untuk mengembangkan potensi akademik, soft skill, dan memperluas jaringan profesional.</p>
                 <p class="body mb-5">HIMATIF berkomitmen untuk memfasilitasi pengembangan mahasiswa melalui berbagai kegiatan yang memberdayakan dan membuka peluang karir di dunia teknologi informasi.</p>
                 <div class="d-flex flex-wrap gap-3">
                     <a href="{{ route('tentang') }}" class="btn btn-primary">Tentang Kami</a>
@@ -16,7 +16,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="position-relative">
-                    <img src="https://images.unsplash.com/photo-1530099486328-e021101a494a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Mahasiswa Teknik Informatika" class="img-fluid rounded shadow-lg">
+                    <img src="{{ asset('img/beranda.JPG') }}" alt="Mahasiswa Teknik Informatika" class="img-fluid rounded shadow-lg">
                     <div class="card position-absolute" style="bottom: -20px; right: 20px; max-width: 200px;">
                         <div class="d-flex align-items-center p-3">
                             <div class="stats-icon me-3">
@@ -118,20 +118,25 @@
                     <p class="section-description">Tetap terinformasi dengan perkembangan terbaru di HIMATIF</p>
                 </div>
                 
-                <div class="row g-4">
-                    @forelse ($news as $item)
-                    @if ($item->type === 'news')
+                <div class="row g-4 mb-5">
+                    <div class="col-12">
+                        <h3 class="mb-3" style="border-bottom:2px solid #eee;">Berita Terbaru</h3>
+                    </div>
+                    @php
+                        $latestNews = collect($news)->filter(fn($item) => $item->type === 'news')->sortByDesc('published_at')->take(3);
+                    @endphp
+                    @forelse ($latestNews as $item)
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card news-card">
                             <div class="news-image-wrapper position-relative">
-                                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="news-image">
-                                <span class="news-category-tag">Berita</span>
-                                @if ($item->published_at->isToday())
+                                <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('images/placeholder.jpg') }}" alt="{{ $item->title }}" class="news-image">
+                                @if ($item->published_at->gt(now()->subDays(3)))
                                 <span class="news-latest-tag">Terbaru</span>
                                 @endif
                             </div>
                             <div class="news-content">
                                 <h3 class="news-title">{{ $item->title }}</h3>
+                                <p class="news-date">{{ $item->published_at->format('d M Y') }}</p>
                                 <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}</p>
                                 <div class="news-footer">
                                     <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
@@ -139,9 +144,33 @@
                             </div>
                         </div>
                     </div>
-                    @endif
                     @empty
                     <p class="text-center">Belum ada berita.</p>
+                    @endforelse
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-12">
+                        <h3 class="mb-3" style="border-bottom:2px solid #eee;">Pengumuman</h3>
+                    </div>
+                    @php
+                        $latestAnnouncements = collect($news)->filter(fn($item) => $item->type === 'announcement')->sortByDesc('published_at')->take(3);
+                    @endphp
+                    @forelse ($latestAnnouncements as $item)
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card news-card">
+                            <div class="news-content">
+                                <h3 class="news-title">{{ $item->title }}</h3>
+                                <p class="news-date">{{ $item->published_at->format('d M Y') }}</p>
+                                <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}</p>
+                                <div class="news-footer">
+                                    <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <p class="text-center">Belum ada pengumuman.</p>
                     @endforelse
                 </div>
                 
@@ -151,83 +180,18 @@
             </div>
         </section>
 
-<!-- Stats Section -->
-<section class="stats-section section-spacing">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-6 col-md-3">
-                <div class="card stats-card">
-                    <div class="stats-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div class="stats-number">25+</div>
-                    <h4 class="stats-label">Kompetisi Dimenangkan</h4>
-                </div>
-            </div>
-            
-            <div class="col-6 col-md-3">
-                <div class="card stats-card">
-                    <div class="stats-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stats-number">1000+</div>
-                    <h4 class="stats-label">Alumni Sukses</h4>
-                </div>
-            </div>
-            
-            <div class="col-6 col-md-3">
-                <div class="card stats-card">
-                    <div class="stats-icon">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <div class="stats-number">15+</div>
-                    <h4 class="stats-label">Kerjasama Industri</h4>
-                </div>
-            </div>
-            
-            <div class="col-6 col-md-3">
-                <div class="card stats-card">
-                    <div class="stats-icon">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <div class="stats-number">50+</div>
-                    <h4 class="stats-label">Proyek Dikembangkan</h4>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<!-- Partners Section -->
-<section class="partners-section section-spacing">
+<section class="map-section section-spacing">
     <div class="container">
         <div class="section-header">
-            <span class="section-subheading">Kolaborasi</span>
-            <h2 class="section-title">Mitra <span class="text-gradient">Kami</span></h2>
-            <p class="section-description">Berkolaborasi dengan perusahaan dan institusi terkemuka untuk memberikan pengalaman terbaik</p>
+            <h3 class="mb-3" style="border-bottom:2px solid #eee;">Lokasi Institut Teknologi Del</h3>
         </div>
-        
-        <div class="partners-grid">
-            <div class="partner-item">
-                <img src="https://via.placeholder.com/150x50?text=Partner+1" alt="Partner 1">
-            </div>
-            <div class="partner-item">
-                <img src="https://via.placeholder.com/150x50?text=Partner+2" alt="Partner 2">
-            </div>
-            <div class="partner-item">
-                <img src="https://via.placeholder.com/150x50?text=Partner+3" alt="Partner 3">
-            </div>
-            <div class="partner-item">
-                <img src="https://via.placeholder.com/150x50?text=Partner+4" alt="Partner 4">
-            </div>
-            <div class="partner-item">
-                <img src="https://via.placeholder.com/150x50?text=Partner+5" alt="Partner 5">
-            </div>
-            <div class="partner-item">
-                <img src="https://via.placeholder.com/150x50?text=Partner+6" alt="Partner 6">
-            </div>
+        <div style="width: 100%; height: 400px;">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.36733022695!2d99.14605787348872!3d2.383220557386357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x302e00fdad2d7341%3A0xf59ef99c591fe451!2sInstitut%20Teknologi%20Del!5e0!3m2!1sid!2sid!4v1748371456732!5m2!1sid!2sid"
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </div>
 </section>
-@endsection 
+
+@endsection

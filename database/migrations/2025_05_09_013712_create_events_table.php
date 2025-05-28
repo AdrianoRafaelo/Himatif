@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('location');
             $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->dateTime('end_date')->nullable();
             $table->enum('status', ['draft', 'scheduled', 'completed', 'cancelled'])->default('draft');
             $table->text('notes')->nullable();
             $table->string('banner_path')->nullable();

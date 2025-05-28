@@ -173,24 +173,6 @@
         @endif
     @endif
 
-    <!-- Proposal Menu (Admin, Kaprodi, Bendahara) -->
-@if(session('user')['role'] === 'admin' || session('user')['role'] === 'kaprodi' || session('user')['role'] === 'bendahara')
-        <div id="collapseProker" class="collapse" aria-labelledby="headingProker" data-parent="#accordionSidebar">
-                @if(session('user')['role'] === 'admin')
-                    <a class="collapse-item" href="{{ route('proker.create') }}">
-                        <i class="fas fa-plus fa-sm mr-2 text-primary"></i>Buat Proker
-                    </a>
-                    <a class="collapse-item" href="{{ route('proker.index') }}">
-                        <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Proker
-                    </a>
-                @elseif(session('user')['role'] === 'bendahara')
-                    <a class="collapse-item" href="{{ route('proker.index') }}">
-                        <i class="fas fa-list fa-sm mr-2 text-primary"></i>Daftar Proker
-                    </a>
-                @endif
-        </div>
-    </li>
-@endif
 @if(session('user')['role'] === 'admin')
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.campus-students.index') }}">

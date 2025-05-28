@@ -22,6 +22,16 @@ class AdminRoleController extends Controller
             'role' => 'required|string|in:admin,kaprodi,bendahara,mahasiswa',
         ]);
 
+        // Jika role yang dipilih adalah kaprodi, pastikan hanya satu user yang menjadi kaprodi
+        if ($request->role === 'kaprodi') {
+            $existingKaprodi = LocalUser::where('role', 'kaprodi')
+                ->where('username', '!=', $request->username)
+                ->first();
+            if ($existingKaprodi) {
+                return redirect()->back()->with('error', 'Sudah ada akun lain yang berperan sebagai kaprodi. Hapus/ubah role kaprodi lama terlebih dahulu.');
+            }
+        }
+
         $user = LocalUser::firstOrCreate(
             ['username' => $request->username],
             ['nama' => $request->username] 

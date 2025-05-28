@@ -31,7 +31,7 @@
     }
 </style>
 <div class="container mt-5">
-    <h2 class="mb-4">Daftar Event</h2>
+    <h2 class="mb-4 text-center">Daftar Event</h2>
 
     @if (session('success'))
     <div class="alert alert-success">
@@ -58,8 +58,9 @@
 
                     <!-- Tag Tanggal -->
                     <div class="position-absolute top-0 start-0 m-2 text-center px-2 py-1 rounded bg-white bg-opacity-75">
-                        <span class="d-block fw-bold" style="font-size: 1.4rem; line-height: 1;">{{ \Carbon\Carbon::parse($event->start_date)->format('d') }}</span>
-                        <span style="font-size: 0.8rem;">{{ strtoupper(\Carbon\Carbon::parse($event->start_date)->format('M')) }}</span>
+                        <span class="fw-bold" style="font-size: 1.1rem; line-height: 1;">
+                            {{ strtoupper(\Carbon\Carbon::parse($event->start_date)->format('M')) }}
+                        </span>
                     </div>
                 </div>
 
@@ -132,8 +133,9 @@
 
                     <!-- Tag Tanggal -->
                     <div class="position-absolute top-0 start-0 m-2 text-center px-2 py-1 rounded bg-white bg-opacity-75">
-                        <span class="d-block fw-bold" style="font-size: 1.4rem; line-height: 1;">{{ \Carbon\Carbon::parse($event->start_date)->format('d') }}</span>
-                        <span style="font-size: 0.8rem;">{{ strtoupper(\Carbon\Carbon::parse($event->start_date)->format('M')) }}</span>
+                        <span class="fw-bold" style="font-size: 1.1rem; line-height: 1;">
+                            {{ strtoupper(\Carbon\Carbon::parse($event->start_date)->format('M')) }}
+                        </span>
                     </div>
                 </div>
 
@@ -195,8 +197,9 @@
 
                     <!-- Tag Tanggal -->
                     <div class="position-absolute top-0 start-0 m-2 text-center px-2 py-1 rounded bg-white bg-opacity-75">
-                        <span class="d-block fw-bold" style="font-size: 1.4rem; line-height: 1;">{{ \Carbon\Carbon::parse($event->start_date)->format('d') }}</span>
-                        <span style="font-size: 0.8rem;">{{ strtoupper(\Carbon\Carbon::parse($event->start_date)->format('M')) }}</span>
+                        <span class="fw-bold" style="font-size: 1.1rem; line-height: 1;">
+                            {{ strtoupper(\Carbon\Carbon::parse($event->start_date)->format('M')) }}
+                        </span>
                     </div>
                 </div>
 

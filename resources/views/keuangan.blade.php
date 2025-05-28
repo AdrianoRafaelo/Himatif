@@ -136,6 +136,17 @@
             </tbody>
         </table>
     </div>
+    <!-- Saldo Akhir di bawah tabel -->
+    <div class="mb-4 mt-3">
+        <div class="alert alert-info text-center fw-bold">
+            Saldo Akhir: Rp {{ number_format($totalPemasukan - $totalPengeluaran, 0, ',', '.') }}
+        </div>
+    </div>
 </div>
+
+@php
+    $totalPemasukan = $records->where('jenis', 'Pemasukan')->sum('jumlah');
+    $totalPengeluaran = $records->where('jenis', 'Pengeluaran')->sum('jumlah');
+@endphp
 
 @endsection

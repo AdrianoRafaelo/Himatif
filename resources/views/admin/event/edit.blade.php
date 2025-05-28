@@ -19,7 +19,7 @@
                             <select name="proker_id" id="proker_id" class="form-control @error('proker_id') is-invalid @enderror" required>
                                 <option value="">Pilih Proker</option>
                                 @foreach ($prokers as $proker)
-                                    <option value="{{ $proker->id }}" {{ old('proker_id', $event->proker_id) == $proker->id ? 'selected' : '' }}>{{ $proker->name }}</option>
+                                    <option value="{{ $proker->id }}" {{ old('proker_id', $event->proker_id) == $proker->id ? 'selected' : '' }}>{{ $proker->subject }}</option>
                                 @endforeach
                             </select>
                             @error('proker_id')
@@ -27,7 +27,7 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label for="proposal_id">Proposal (Opsional)</label>
+                            <label for="proposal_id">Proposal</label>
                             <select name="proposal_id" id="proposal_id" class="form-control">
                                 <option value="">Tidak Ada</option>
                                 @foreach ($proposals as $proposal)
@@ -68,7 +68,7 @@
                         </div>
                         <div class="form-group">
                             <label for="end_date">Tanggal Selesai</label>
-                            <input type="datetime-local" name="end_date" id="end_date" class="form-control @error('end_date') is-invalid @enderror" value="{{ old('end_date', $event->end_date->format('Y-m-d\TH:i')) }}" required>
+                            <input type="datetime-local" name="end_date" id="end_date" class="form-control @error('end_date') is-invalid @enderror" value="{{ old('end_date') }}">
                             @error('end_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

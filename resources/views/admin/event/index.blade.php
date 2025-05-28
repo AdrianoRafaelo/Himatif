@@ -50,7 +50,7 @@
                                         @foreach ($scheduledEvents as $event)
                                             <tr>
                                                 <td>{{ $event->name }}</td>
-                                                <td>{{ $event->proker->name ?? '-' }}</td>
+                                                <td>{{ $event->proker->subject ?? '-' }}</td>
                                                 <td>{{ $event->location }}</td>
                                                 <td>{{ $event->start_date }}</td>
                                                 <td>{{ $event->end_date }}</td>

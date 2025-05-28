@@ -109,41 +109,88 @@
     </div>
 </section>
 
-<!-- Seksi Berita Terbaru -->
-<section class="news-section section-spacing">
-    <div class="container">
-        <div class="section-header">
-            <span class="section-subheading">Kabar Terbaru</span>
-            <h2 class="section-title">Berita <span class="text-gradient">& Pengumuman</span></h2>
-            <p class="section-description">Tetap terinformasi dengan perkembangan terbaru di HIMATIF</p>
-        </div>
-        
-            <div class="row g-4">
-                @forelse ($news as $item)
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card news-card">
-                        <div class="news-image-wrapper">
-                            <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="news-image">
-                            <span class="news-category-tag">Berita</span> {{-- Ganti sesuai kategori jika ada --}}
-                        </div>
-                        <div class="news-content">
-                            <h3 class="title-3 news-title">{{ $item->title }}</h3>
-                            <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}</p>
-                            <div class="news-footer">
-                                <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+<!-- Latest News Section -->
+        <section class="news-section section-spacing">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-subheading">Kabar Terbaru</span>
+                    <h2 class="section-title">Berita <span class="text-gradient">& Pengumuman</span></h2>
+                    <p class="section-description">Tetap terinformasi dengan perkembangan terbaru di HIMATIF</p>
+                </div>
+                
+                <div class="row g-4 mb-5">
+                    <div class="col-12">
+                        <h3 class="mb-3" style="border-bottom:2px solid #eee;">Berita Terbaru</h3>
+                    </div>
+                    @php
+                        $latestNews = collect($news)->filter(fn($item) => $item->type === 'news')->sortByDesc('published_at')->take(3);
+                    @endphp
+                    @forelse ($latestNews as $item)
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card news-card">
+                            <div class="news-image-wrapper position-relative">
+                                <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('images/placeholder.jpg') }}" alt="{{ $item->title }}" class="news-image">
+                                @if ($item->published_at->gt(now()->subDays(3)))
+                                <span class="news-latest-tag">Terbaru</span>
+                                @endif
+                            </div>
+                            <div class="news-content">
+                                <h3 class="news-title">{{ $item->title }}</h3>
+                                <p class="news-date">{{ $item->published_at->format('d M Y') }}</p>
+                                <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}</p>
+                                <div class="news-footer">
+                                    <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    @empty
+                    <p class="text-center">Belum ada berita.</p>
+                    @endforelse
                 </div>
-                @empty
-                <p class="text-center">Belum ada berita.</p>
-                @endforelse
+
+                <div class="row g-4 mb-5">
+                    <div class="col-12">
+                        <h3 class="mb-3" style="border-bottom:2px solid #eee;">Pengumuman</h3>
+                    </div>
+                    @php
+                        $latestAnnouncements = collect($news)->filter(fn($item) => $item->type === 'announcement')->sortByDesc('published_at')->take(3);
+                    @endphp
+                    @forelse ($latestAnnouncements as $item)
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card news-card">
+                            <div class="news-content">
+                                <h3 class="news-title">{{ $item->title }}</h3>
+                                <p class="news-date">{{ $item->published_at->format('d M Y') }}</p>
+                                <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}</p>
+                                <div class="news-footer">
+                                    <a href="#" class="btn btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <p class="text-center">Belum ada pengumuman.</p>
+                    @endforelse
+                </div>
+                
+                <div class="text-center mt-5">
+                    <a href="{{ route('news') }}" class="btn btn-outline">Lihat Semua Berita <i class="fas fa-arrow-right btn-icon"></i></a>
+                </div>
             </div>
-            
-            
-        
-        <div class="text-center mt-5">
-            <a href="{{ route('news') }}" class="btn btn-outline">Lihat Semua Berita <i class="fas fa-arrow-right btn-icon"></i></a>
+        </section>
+
+<section class="map-section section-spacing">
+    <div class="container">
+        <div class="section-header">
+            <h3 class="mb-3" style="border-bottom:2px solid #eee;">Lokasi Institut Teknologi Del</h3>
+        </div>
+        <div style="width: 100%; height: 400px;">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.36733022695!2d99.14605787348872!3d2.383220557386357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x302e00fdad2d7341%3A0xf59ef99c591fe451!2sInstitut%20Teknologi%20Del!5e0!3m2!1sid!2sid!4v1748371456732!5m2!1sid!2sid"
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </div>
-</section>@endsection
+</section>
+@endsection

@@ -42,7 +42,7 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label for="proposal_id">Proposal (Opsional)</label>
+                            <label for="proposal_id">Proposal</label>
                             <select name="proposal_id" id="proposal_id" class="form-control" style="color: #000; background-color: #fff;">
                                 <option value="">Tidak Ada</option>
                                 @if($proposals->isEmpty())
@@ -82,14 +82,14 @@
                         </div>
                         <div class="form-group">
                             <label for="start_date">Tanggal Mulai</label>
-                            <input type="datetime-local" name="start_date" id="start_date" class="form-control @error('start_date') is-invalid @enderror" value="{{ old('start_date') }}" required>
+                            <input type="month" name="start_date" id="start_date" class="form-control @error('start_date') is-invalid @enderror" value="{{ old('start_date') }}" required>
                             @error('start_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="form-group">
                             <label for="end_date">Tanggal Selesai</label>
-                            <input type="datetime-local" name="end_date" id="end_date" class="form-control @error('end_date') is-invalid @enderror" value="{{ old('end_date') }}" required>
+                            <input type="datetime-local" name="end_date" id="end_date" class="form-control @error('end_date') is-invalid @enderror" value="{{ old('end_date') }}">
                             @error('end_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

@@ -29,9 +29,9 @@
     }
 
     .text-gradient {
-        background: linear-gradient(90deg, #4b6cb7, #182848);
-        -webkit-background-clip: text;
-        color: transparent;
+        background: none;
+        -webkit-background-clip: unset;
+        color: inherit;
     }
 
     .section-description {
@@ -119,8 +119,8 @@
     .news-category-tag {
         top: 10px;
         left: 10px;
-        background-color: #007bff;
-        color: white;
+        background: none;
+        color: inherit;
     }
 
     .news-latest-tag {
@@ -198,7 +198,6 @@
                 <div class="card news-card">
                     <div class="news-image-wrapper">
                         <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('images/placeholder.jpg') }}" alt="{{ $item->title }}" class="news-image">
-                        <span class="news-category-tag">Berita</span>
                         @if ($item->published_at->gt(now()->subDays(3)))
                             <span class="news-latest-tag">Terbaru</span>
                         @endif
@@ -209,7 +208,7 @@
                         <p class="news-date">{{ $item->published_at->format('d M Y') }}</p>
                         <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}</p>
                         <div class="news-footer">
-                            <a href="#" class="btn-text">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
+                            <a href="#" class="btn-text" data-bs-toggle="modal" data-bs-target="#newsModal{{ $item->id }}">Baca Selengkapnya <i class="fas fa-arrow-right btn-icon"></i></a>
                         </div>
                     </div>
                 </div>
@@ -220,4 +219,23 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Detail Berita -->
+@foreach ($news as $item)
+<div class="modal fade" id="newsModal{{ $item->id }}" tabindex="-1" aria-labelledby="newsModalLabel{{ $item->id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newsModalLabel{{ $item->id }}">{{ $item->title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('images/placeholder.jpg') }}" alt="{{ $item->title }}" class="img-fluid mb-3" style="max-height:300px;object-fit:cover;">
+        <p class="text-muted mb-2">{{ $item->published_at->format('d M Y') }}</p>
+        <div>{!! $item->content !!}</div>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
 @endsection

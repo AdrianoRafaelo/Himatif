@@ -76,7 +76,7 @@ class EventController extends Controller
             'description' => 'nullable|string',
             'location' => 'required|string|max:255',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
             'status' => 'required|in:draft,scheduled,completed,cancelled',
             'notes' => 'nullable|string',
             'banner_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -134,19 +134,6 @@ class EventController extends Controller
                             'tidak_hadir' => false,
                         ]
                     );
-
-                    LocalUser::updateOrCreate(
-                        ['username' => $mhs->user_name ?? $mhs->nim],
-                        [
-                            'nama' => $mhs->nama ?? 'Tidak diketahui',
-                            'nim' => $mhs->nim ?? null,
-                            'angkatan' => $mhs->angkatan ?? null,
-                            'prodi' => $mhs->prodi_name ?? null,
-                            'email' => $mhs->email ?? null,
-                            'role' => 'mahasiswa',
-                            'password' => bcrypt('default_password'),
-                        ]
-                    );
                 }
 
                 Log::info('Event berhasil dibuat dan mahasiswa didaftarkan', [
@@ -188,7 +175,7 @@ class EventController extends Controller
             'description' => 'nullable|string',
             'location' => 'required|string|max:255',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
             'status' => 'required|in:draft,scheduled,completed,cancelled',
             'notes' => 'nullable|string',
             'banner_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -225,5 +212,5 @@ class EventController extends Controller
         }
         $event->delete();
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil dihapus.');
-    }
+}
 }

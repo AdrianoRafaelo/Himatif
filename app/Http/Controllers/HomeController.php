@@ -16,8 +16,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $news = News::latest()->take(3)->get();
+        // Ambil semua berita dan pengumuman, urutkan terbaru
+        $news = News::orderBy('published_at', 'desc')->get();
         $events = Event::latest()->take(3)->get(); 
-    return view('home', compact('news','events'));
+        return view('home', compact('news','events'));
     }
-} 
+}

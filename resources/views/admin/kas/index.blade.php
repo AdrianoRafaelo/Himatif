@@ -501,6 +501,16 @@
                     @csrf
                     <input type="hidden" name="bulan" value="{{ request('bulan') }}">
                     <input type="hidden" name="tahun" value="{{ request('tahun') }}">
+                    @if(isset($sudahBayar) && isset($belumBayar))
+    <div class="mb-4 flex gap-4">
+        <div class="px-4 py-2 rounded bg-green-100 text-green-800 font-semibold shadow">
+            Sudah Bayar: {{ $sudahBayar }}
+        </div>
+        <div class="px-4 py-2 rounded bg-red-100 text-red-800 font-semibold shadow">
+            Belum Bayar: {{ $belumBayar }}
+        </div>
+    </div>
+@endif
                     <table class="min-w-full border text-sm">
                         <thead class="bg-gray-200">
                             <tr>
@@ -508,7 +518,14 @@
                                 <th class="border px-4 py-2 text-left">Nama</th>
                                 <th class="border px-4 py-2 text-left">Prodi</th>
                                 <th class="border px-4 py-2 text-left">Angkatan</th>
-                                <th class="border px-4 py-2 text-left">Bayar</th>
+                                <th class="border px-4 py-2 text-left">Bayar
+    <button type="button" id="cekAllBtn" class="ml-2 p-1 rounded bg-blue-500 text-white hover:bg-blue-600 focus:outline-none align-middle" title="Centang Semua" style="vertical-align:middle;">
+        <svg id="cekAllIcon" xmlns="http://www.w3.org/2000/svg" class="inline" style="width:1.5rem;height:1.5rem;vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <rect x="3" y="3" width="18" height="18" rx="4" fill="#3b82f6" stroke="#2563eb" stroke-width="2"/>
+            <path id="cekAllPath" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M7 13l3 3 7-7" style="display:none;" />
+        </svg>
+    </button>
+</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -519,12 +536,12 @@
                                     <td class="border px-4 py-2">{{ $mhs['prodi_name'] }}</td>
                                     <td class="border px-4 py-2">{{ $mhs['angkatan'] }}</td>
                                     <td class="border px-4 py-2 text-center">
-                                        <input type="checkbox" name="bayar[{{ $mhs['nim'] }}][bayar]" value="1"
-                                               {{ in_array($mhs['nim'], $payments) ? 'checked' : '' }}>
-                                        <input type="hidden" name="bayar[{{ $mhs['nim'] }}][nama]" value="{{ $mhs['nama'] }}">
-                                        <input type="hidden" name="bayar[{{ $mhs['nim'] }}][angkatan]" value="{{ $mhs['angkatan'] }}">
-                                        <input type="hidden" name="bayar[{{ $mhs['nim'] }}][prodi]" value="{{ $mhs['prodi_name'] }}">
-                                    </td>
+                    <input type="checkbox" class="kas-checkbox" name="bayar[{{ $mhs['nim'] }}][bayar]" value="1"
+                           {{ in_array($mhs['nim'], $payments) ? 'checked' : '' }}>
+                    <input type="hidden" name="bayar[{{ $mhs['nim'] }}][nama]" value="{{ $mhs['nama'] }}">
+                    <input type="hidden" name="bayar[{{ $mhs['nim'] }}][angkatan]" value="{{ $mhs['angkatan'] }}">
+                    <input type="hidden" name="bayar[{{ $mhs['nim'] }}][prodi]" value="{{ $mhs['prodi_name'] }}">
+                </td>
                                 </tr>
                             @empty
                                 <tr>
@@ -550,4 +567,29 @@
             <p class="text-gray-600">Silakan pilih bulan dan tahun untuk melihat data pembayaran.</p>
         @endif
     </div>
+
+    @if(count($mahasiswa) > 0)
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cekAllBtn = document.getElementById('cekAllBtn');
+            const cekAllPath = document.getElementById('cekAllPath');
+            cekAllBtn.addEventListener('click', function() {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="bayar"]');
+                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                checkboxes.forEach(cb => cb.checked = !allChecked);
+                // Tampilkan centang di ikon jika semua dicentang, hilangkan jika tidak
+                if (!allChecked) {
+                    cekAllPath.style.display = '';
+                } else {
+                    cekAllPath.style.display = 'none';
+                }
+            });
+            // Sync icon on page load (jika semua sudah dicentang)
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="bayar"]');
+            if (checkboxes.length && Array.from(checkboxes).every(cb => cb.checked)) {
+                cekAllPath.style.display = '';
+            }
+        });
+    </script>
+    @endif
 @endsection

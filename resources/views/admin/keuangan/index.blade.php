@@ -46,6 +46,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    <div class="mb-4">
+        <canvas id="keuanganLineChart" height="80"></canvas>
+    </div>
+
     <div class="row">
         <!-- Tabel Pemasukan -->
         <div class="col-md-6">
@@ -177,3 +181,61 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('keuanganLineChart').getContext('2d');
+        const labels = [
+            @for($i = 1; $i <= 12; $i++)
+                '{{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}',
+            @endfor
+        ];
+        const pemasukan = [
+            @for($i = 1; $i <= 12; $i++)
+                {{ $records->where('jenis', 'Pemasukan')->where(function($item) use ($i) { return \Carbon\Carbon::parse($item->tanggal)->month == $i; })->sum('jumlah') }},
+            @endfor
+        ];
+        const pengeluaran = [
+            @for($i = 1; $i <= 12; $i++)
+                {{ $records->where('jenis', 'Pengeluaran')->where(function($item) use ($i) { return \Carbon\Carbon::parse($item->tanggal)->month == $i; })->sum('jumlah') }},
+            @endfor
+        ];
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Pemasukan',
+                        data: pemasukan,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16,185,129,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Pengeluaran',
+                        data: pengeluaran,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239,68,68,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Grafik Keuangan Tahunan' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    });
+</script>
+@endpush

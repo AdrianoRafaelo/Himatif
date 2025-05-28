@@ -62,4 +62,11 @@ class NewsController extends Controller
         $announcements = News::where('type', 'announcement')->orderBy('published_at', 'desc')->get();
         return view('news', compact('news', 'announcements'));
     }
+
+    public function destroy($id)
+    {
+        $news = News::findOrFail($id);
+        $news->delete();
+        return redirect()->route('admin.news.index')->with('success', 'Berita atau pengumuman berhasil dihapus.');
+    }
 }

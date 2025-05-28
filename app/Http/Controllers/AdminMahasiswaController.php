@@ -111,7 +111,15 @@ class AdminMahasiswaController extends Controller
                 ->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
 
-        return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments', 'bulan', 'tahun', 'namaBulan'));
+        // Hitung total sudah bayar dan belum bayar
+        $sudahBayar = 0;
+        $belumBayar = 0;
+        if (!empty($mahasiswa)) {
+            $sudahBayar = count($payments);
+            $belumBayar = count($mahasiswa) - $sudahBayar;
+        }
+
+        return view('admin.kas.index', compact('mahasiswa', 'angkatanList', 'angkatan', 'payments', 'bulan', 'tahun', 'namaBulan', 'sudahBayar', 'belumBayar'));
     }
 
     public function store(Request $request)
