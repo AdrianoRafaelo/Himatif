@@ -16,7 +16,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="position-relative">
-                    <img src="{{ asset('img/beranda.JPG') }}" alt="Mahasiswa Teknik Informatika" class="img-fluid rounded shadow-lg">
+                    <img src="{{ asset('img/beranda.jpg') }}" alt="Mahasiswa Teknik Informatika" class="img-fluid rounded shadow-lg">
                     <div class="card position-absolute" style="bottom: -20px; right: 20px; max-width: 200px;">
                         <div class="d-flex align-items-center p-3">
                             <div class="stats-icon me-3">
