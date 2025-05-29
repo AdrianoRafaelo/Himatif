@@ -23,6 +23,7 @@ return new class extends Migration
         $table->string('email')->nullable()->unique();
         $table->string('role')->nullable(); // contoh: admin, mahasiswa, bendahara
         $table->rememberToken(); // << tambah ini jika pakai login
+        $table->string('password')->nullable(); // password hash
         $table->timestamps();
     });
     

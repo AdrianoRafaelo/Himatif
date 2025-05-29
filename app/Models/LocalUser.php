@@ -19,6 +19,7 @@ class LocalUser extends Model
         'prodi',
         'email',
         'role',
+        'password', // tambahkan ini
     ];
 
     protected $hidden = [
