@@ -75,4 +75,30 @@ class NewsController extends Controller
         $news = News::findOrFail($id);
         return view('admin.news.edit', compact('news'));
     }
+
+    public function update(Request $request, $id)
+    {
+        $news = News::findOrFail($id);
+        $rules = [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'type' => 'required|in:news,announcement',
+        ];
+        if ($request->type === 'news') {
+            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240'; // max 10MB
+        }
+        $validated = $request->validate($rules);
+        if ($request->hasFile('image') && $request->type === 'news') {
+            // Hapus gambar lama jika ada
+            if ($news->image) {
+                \Storage::disk('public')->delete($news->image);
+            }
+            $news->image = $request->file('image')->store('news_images', 'public');
+        }
+        $news->title = $validated['title'];
+        $news->type = $validated['type'];
+        $news->content = $validated['content'];
+        $news->save();
+        return redirect()->route('admin.news.index')->with('success', ($validated['type'] === 'news' ? 'Berita' : 'Pengumuman') . ' berhasil diperbarui!');
+    }
 }
