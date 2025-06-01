@@ -79,7 +79,7 @@ class EventController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'status' => 'required|in:draft,scheduled,completed,cancelled',
             'notes' => 'nullable|string',
-            'banner_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'banner_path' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // max 10MB
             'angkatan_akses' => 'required_without:semua_angkatan|string|regex:/^(\d{4}(,\d{4})*)$/',
             'semua_angkatan' => 'nullable|boolean',
         ], [
@@ -178,7 +178,7 @@ class EventController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'status' => 'required|in:draft,scheduled,completed,cancelled',
             'notes' => 'nullable|string',
-            'banner_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'banner_path' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // max 10MB
             'angkatan_akses' => 'required_without:semua_angkatan|string|regex:/^(\d{4}(,\d{4})*)$/',
             'semua_angkatan' => 'nullable|boolean',
         ], [

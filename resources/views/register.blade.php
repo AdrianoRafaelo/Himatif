@@ -3,10 +3,35 @@
 @section('title', 'Registrasi Event')
 
 @section('content')
-<div class="container">
-    <h2>Daftar ke Event: {{ $event->nama_event }}</h2>
+<style>
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+</style>
+<div class="container mt-5">
+    <h2>Daftar ke Event: {{ $event->name }}</h2>
 
-    <form action="{{ route('event.register.store', ['eventId' => $event->id]) }}" method="POST">
+    @if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
+
+    <form action="{{ route('student.register.store', ['eventId' => $event->id]) }}" method="POST">
         @csrf
         <input type="hidden" name="event_id" value="{{ $event->id }}">
 

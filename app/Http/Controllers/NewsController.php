@@ -29,7 +29,7 @@ class NewsController extends Controller
         ];
 
         if ($request->type === 'news') {
-            $rules['image'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+            $rules['image'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240'; // max 10MB
         }
 
         $validated = $request->validate($rules);
@@ -68,5 +68,11 @@ class NewsController extends Controller
         $news = News::findOrFail($id);
         $news->delete();
         return redirect()->route('admin.news.index')->with('success', 'Berita atau pengumuman berhasil dihapus.');
+    }
+
+    public function edit($id)
+    {
+        $news = News::findOrFail($id);
+        return view('admin.news.edit', compact('news'));
     }
 }

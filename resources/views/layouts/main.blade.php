@@ -107,9 +107,9 @@
                 </div>
                 <div class="social-icons d-flex gap-3 align-items-center position-relative">
                     <!-- Social Media Icons -->
-                    <a href="#" class="text-secondary" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/himatif.itdel?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="text-secondary" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
                     <a href="#" class="text-secondary" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-secondary" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="https://youtube.com/@himatifitdel4954?si=FJC5JAXBrY-2JXqr" class="text-secondary" aria-label="YouTube" target="_blank"><i class="fab fa-youtube"></i></a>
                     <a href="#" class="text-secondary" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
                     <a href="#" class="text-secondary" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
                     @if(session('user') && isset(session('user')['role']) && session('user')['role'] === 'mahasiswa')
@@ -223,29 +223,26 @@
                         <div class="caption-content">
                             <h2>Welcoming Party</h2>
                             <p>penyambutan anggota baru mahasiswa D3 Teknologi Informasi</p>
-                            <a href="#" class="btn mt-3">Discover</a>
                         </div>
                     </div>
                 </div>
                 <div class="carousel-item">
                     <div class="carousel-overlay"></div>
-                    <img src="{{ asset('img/carousel-2.jpg') }}" class="d-block w-100" alt="Workshop">
+                    <img src="{{ asset('img/carousel-2.JPG') }}" class="d-block w-100" alt="Workshop">
                     <div class="carousel-caption">
                         <div class="caption-content">
-                            <h2>Welcoming Party</h2>
-                            <p>penyambutan anggota baru mahasiswa D3 Teknologi Informasi</p>
-                            <a href="#" class="btn mt-3">Explore</a>
+                            <h2>Screen Together</h2>
+                            <p>nonton bareng berasama anggota HIMATIF</p>
                         </div>
                     </div>
                 </div>
                 <div class="carousel-item">
                     <div class="carousel-overlay"></div>
-                    <img src="{{ asset('img/carousel-3.jpg') }}" class="d-block w-100" alt="Community">
+                    <img src="{{ asset('img/carousel-3.JPG') }}" class="d-block w-100" alt="Community">
                     <div class="carousel-caption">
                         <div class="caption-content">
-                            <h2>Welcoming Party</h2>
-                            <p>penyambutan anggota baru mahasiswa D3 Teknologi Informasi</p>
-                            <a href="#" class="btn mt-3">Join Now</a>
+                            <h2>Kaderisasi</h2>
+                            <p>Kaderisasi angkatan 2024 sebagai bentuk pelatihan yang dilakukan setiap tahunnya</p>
                         </div>
                     </div>
                 </div>
@@ -305,9 +302,9 @@
                 <div class="col-md-4">
                     <h5 class="mb-3">Ikuti Kami</h5>
                     <div class="d-flex gap-3">
-                        <a href="#" class="text-secondary" aria-label="Instagram"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="https://www.instagram.com/himatif.itdel?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="text-secondary" aria-label="Instagram" target="_blank"><i class="fab fa-instagram fa-2x"></i></a>
                         <a href="#" class="text-secondary" aria-label="Twitter"><i class="fab fa-twitter fa-2x"></i></a>
-                        <a href="#" class="text-secondary" aria-label="YouTube"><i class="fab fa-youtube fa-2x"></i></a>
+                        <a href="https://youtube.com/@himatifitdel4954?si=FJC5JAXBrY-2JXqr" class="text-secondary" aria-label="YouTube" target="_blank"><i class="fab fa-youtube fa-2x"></i></a>
                         <a href="#" class="text-secondary" aria-label="Facebook"><i class="fab fa-facebook fa-2x"></i></a>
                         <a href="#" class="text-secondary" aria-label="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>
                     </div>
